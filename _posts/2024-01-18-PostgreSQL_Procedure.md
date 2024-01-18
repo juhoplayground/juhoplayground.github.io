@@ -26,7 +26,7 @@ PostgreSQL에서 Procedure는 PL/pgSQL(Procedural Language/PostgreSQL)이라는<
 SELECT * FROM pg_catalog.pg_extensions;
 ```
 <!-- ![Alt Text](/images/plpgsql.png) -->
-![image](../img/plpgsql.png)
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/34d6bdf8-5e0a-4b5d-a536-15c67b06eea7)
 
 ## PL/pgSQL 특징
 1. 조건문과 반복문 <br/>
