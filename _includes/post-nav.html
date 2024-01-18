@@ -1,34 +1,20 @@
 <!-- Navigation buttons at the bottom of the post. -->
 
 <nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation">
-  {% assign previous = site.data.locales[include.lang].post.button.previous %}
-  {% assign next = site.data.locales[include.lang].post.button.next %}
+  {% assign current_category = page.categories | first %}
+  
+  {% assign previous_post = site.categories[current_category] | sort: 'date' | last %}
+  {% assign next_post = site.categories[current_category] | sort: 'date' | first %}
 
-  {% if page.previous.url %}
-    <a
-      href="{{ site.baseurl }}{{ page.previous.url }}"
-      class="btn btn-outline-primary"
-      aria-label="{{ previous }}"
-    >
-      <p>{{ page.previous.title }}</p>
-    </a>
-  {% else %}
-    <div class="btn btn-outline-primary disabled" aria-label="{{ previous }}">
-      <p>-</p>
-    </div>
+  {% if previous_post %}
+    <span class="previous-post">
+      Previous: <a href="{{ previous_post.url }}">{{ previous_post.title }}</a>
+    </span>
   {% endif %}
-
-  {% if page.next.url %}
-    <a
-      href="{{ site.baseurl }}{{page.next.url}}"
-      class="btn btn-outline-primary"
-      aria-label="{{ next }}"
-    >
-      <p>{{ page.next.title }}</p>
-    </a>
-  {% else %}
-    <div class="btn btn-outline-primary disabled" aria-label="{{ next }}">
-      <p>-</p>
-    </div>
+  
+  {% if next_post %}
+    <span class="next-post">
+      Next: <a href="{{ next_post.url }}">{{ next_post.title }}</a>
+    </span>
   {% endif %}
 </nav>
