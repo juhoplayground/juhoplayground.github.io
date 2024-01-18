@@ -17,13 +17,14 @@
     {% endif %}
   {% endfor %}
   {% if prev_post %}
-      <a href="{{ prev_post.url }}" class="pagination--pager">{{ site.data.ui-text[site.locale].pagination_previous | default: "Previous : " }}{{ prev_post.title }}</a>
+    <span class="previous-post">Previous : <a href="{{ prev_post.url }}" class="pagination--pager">{{ site.data.ui-text[site.locale].pagination_previous}}{{ prev_post.title }}</a></span>
     {% else %}
-      <a class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_previous | default: "Previous" }}</a>
+    <span class="previous-post">Previous <a class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_previous}}</a></span>
     {% endif %}
+    
     {% if next_post %}
-      <a href="{{ next_post.url }}" class="pagination--pager">{{ site.data.ui-text[site.locale].pagination_next | default: "Next : " }}{{ next_post.title }}</a>
+    <span class="next-post">Next : <a href="{{ next_post.url }}" class="pagination--pager">{{ site.data.ui-text[site.locale].pagination_next}}{{ next_post.title }}</a></span>
     {% else %}
-      <a class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_next | default: "Next" }}</a>
+    <span class="next-post">Next <a class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_next}}</a></span>
     {% endif %}
 </nav>
