@@ -4,7 +4,7 @@ title: PostgreSQL PL/pgSQL - Procedure
 author: 'Juho'
 date: 2024-01-18 16:12:00 +0900
 categories: [PostgreSQL, Database, Procedure]
-tags: [PostgreSQL, PostgreSQL, Procedure]
+tags: [PostgreSQL, Database, Procedure]
 pin: True
 toc : True
 ---
