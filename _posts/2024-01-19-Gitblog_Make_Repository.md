@@ -51,7 +51,10 @@ Description은 생략해도 된다.<br/>
 
 ## Local로 git clone
 PC에서 작업할 수 있도록 git clone을 해야한다.<br/>
-빨간색 상자 영역의 Repository의 주소를 복사한다.<br/>
+빨간색 상자 영역의 Repository의 주소를 복사한다.
+![KakaoTalk_20240120_002852399_02](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/24844fb8-2eac-4584-97e9-71646325eda0)
+
+<br/>
 
 Repository를 다운로드 받을 빈 폴더 하나를 생성한다.<br/>
 지금은 폴더명을 `gitblog`로 정했다. <br/>
