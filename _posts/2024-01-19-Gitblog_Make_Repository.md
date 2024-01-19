@@ -33,17 +33,21 @@ Github 사용자들은 Repository에 정적 파일 업로드를 업로드하여<
 
 ## Repository 생성
 1) [깃허브](https://github.com)에 들어가서 왼쪽 상단의 녹색의 `Create Repository` 버튼을 클릭하여 레파지토리를 생성한다.
+![KakaoTalk_20240120_002852399](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/4a0ba4ad-55a4-405e-960d-55fbde52263b)
 
 2) 버튼을 클릭하면 Repository 생성 페이지로 이동된다.
+![KakaoTalk_20240120_002852399_01](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/0193a390-ff40-47f0-9a06-028bdaea1507)
 
 3) Repository name을 본인의 Github ID인 [<span style="color:red">**Github ID**</span>].github.io로 설정해야한다.<br/>
 Description은 생략해도 된다.<br/>
 공개 범위는 초기 상태처럼 Public으로 유지한다.
 
 4) 그리고 생성을 마무리하면 아래와 같이 Repository가 정상적으로 생성된 것을 확인할 수 있다.
+![KakaoTalk_20240120_002852399_02](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/602c0044-0af9-414e-91a4-e089f522b03b)
 
 5) 그 다음 웹 주소에 생성한 [Github ID].github.io을 입력하면 블로그가 생성된 것을 확인할 수 있다.<br/>
 하지만 현재는 아무것도 작성한 것이 없기 때문에 404 Not Found 페이지를 확인할 수 있다.
+![KakaoTalk_20240120_002852399_03](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/b81568a0-d2a3-43f0-a750-e4239142a804)
 
 ## Local로 git clone
 PC에서 작업할 수 있도록 git clone을 해야한다.<br/>
