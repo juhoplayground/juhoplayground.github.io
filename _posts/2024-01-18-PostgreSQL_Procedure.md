@@ -3,8 +3,8 @@ layout: post
 title: PostgreSQL PL/pgSQL - Procedure
 author: 'Juho'
 date: 2024-01-18 16:12:00 +0900
-categories: [Database, PostgreSQL, Procedure]
-tags: [Database, PostgreSQL, Procedure]
+categories: [PostgreSQL, Database, Procedure]
+tags: [PostgreSQL, PostgreSQL, Procedure]
 pin: True
 toc : True
 ---
