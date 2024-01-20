@@ -19,12 +19,12 @@
   {% if prev_post %}
     <span class="previous-post">Previous : <a href="{{ prev_post.url }}" class="pagination--pager">{{ site.data.ui-text[site.locale].pagination_previous}}{{ prev_post.title }}</a></span>
     {% else %}
-    <span class="previous-post">Previous <a href="#" class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_previous}}</a></span>
+    <span class="previous-post"> <a href="#" class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_previous}}</a></span>
     {% endif %}
     
     {% if next_post %}
     <span class="next-post">Next : <a href="{{ next_post.url }}" class="pagination--pager">{{ site.data.ui-text[site.locale].pagination_next}}{{ next_post.title }}</a></span>
     {% else %}
-    <span class="next-post">Next <a href="#" class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_next}}</a></span>
+    <span class="next-post"><a href="#" class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_next}}</a></span>
     {% endif %}
 </nav>
