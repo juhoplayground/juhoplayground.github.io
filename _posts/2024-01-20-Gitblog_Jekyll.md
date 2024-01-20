@@ -58,7 +58,7 @@ $ ruby -v
 설치한 Ruby의 버전이 표시 됩니다.
 
 
-## Jekyll Bundle 다운로드
+## Jekyll Bundler 다운로드
 이제 Jekyll 및 Bundle을 설치해보겠습니다.
 
 먼저
