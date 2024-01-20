@@ -1443,23 +1443,6 @@ search {
     transition: all 0.3s ease-in-out;
   }
 
-  #search-results > article {
-    width: 45%;
-
-    &:nth-child(odd) {
-      margin-right: 1.5rem;
-    }
-
-    &:nth-child(even) {
-      margin-left: 1.5rem;
-    }
-
-    &:last-child:nth-child(odd) {
-      position: relative;
-      right: 24.3%;
-    }
-  }
-
   .content {
     font-size: 1.03rem;
   }
