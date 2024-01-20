@@ -26,11 +26,11 @@ Jeykll 테마를 사용하여 웹 사이트를 쉽게 만들고 관리할 수 �
 Jekyll 테마의 Repository를 clone 하고, 필요에 따라 조정하여 GitHub 블로그에 적용할 수 있다. <br/>
 
 ## Jekyll테마 다운로드
-[http://jekyllthemes.org](http://jekyllthemes.org/)에 접속한다.
+[http://jekyllthemes.org](https://jekyllthemes.org/)에 접속한다.
 ![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/09f036c9-ca4f-4f4d-a889-59d6048ae4c0) <br/>
 
 원하는 테마를 하나 선택해서 클릭한다.
-지금 이 블로그에 적용된 테마는 [Chirpy](http://jekyllthemes.org/themes/jekyll-theme-chirpy/)다. <br/>
+지금 이 블로그에 적용된 테마는 [Chirpy](https://jekyllthemes.org/themes/jekyll-theme-chirpy/)다. <br/>
 
 ![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/2f25d2c3-0c74-4829-99a2-b5db0e5e3c37)
 Download 버튼을 클릭한다. <br/>
