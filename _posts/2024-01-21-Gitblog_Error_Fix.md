@@ -103,7 +103,7 @@ npm install && npm run build
 ![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/f4ee7116-bbec-4341-bbe1-ef89be0956d0) <br/>
 그리고 Git에 푸시하고 Actions을 확인해보면, 이전과 달리 정상적으로 빌드된 것을 확인할 수 있다.<br/>
 다시 [GitHub Id].github.io로 접속해보면 <br/>
-![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/e0d95506-9cc4-4dd8-b368-756bf1299f55)
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/5ef8e628-ce83-4bac-830d-0055c92135d0)
 드디어 정상적으로 블로그를 확인할 수 있다.
 
 ---
