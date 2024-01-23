@@ -77,12 +77,18 @@ Repository에 많은 폴더가 존재하는데 각 폴더와 yml 파일의 내�
 파비콘은 주로 16X16 픽셀 크기의 이미지로 제작되며 ICO 형식으로 제공되거나 웹페이지의 HTML 코드에서 링크를 통해 지정할 수 있습니다. <br/>
 [Real Favicon Generator](https://realfavicongenerator.net/)에 접속합니다. <br/>
 파란색 `Select your Favicon image` 버튼을 클릭 후 파비콘으로 사용하려는 이미지를 업로드 합니다. <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/8a94a544-5366-4718-9364-ceb1a6f4da75)
 하단의 `Generate your Favicons and HTML code` 버튼을 클릭해줍니다. <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/1899e59f-7df1-44b2-a727-619e75ba02e7)
 `Favicon packag` 버튼을 클릭하면 `.zip` 파일이 다운로드 됩니다.
-해당 `.zip` 파일을 압축 해제한 다음 `browserconfig.xml`과 `site.webmanifest` 파일을 삭제해줍니다 <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/59265d22-3256-476b-bdec-c252493ed053)
+해당 `.zip` 파일을 압축 해제한 다음 `browserconfig.xml`과 `site.webmanifest` 파일을 삭제해줍니다. <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/20a3ebf5-9834-4bf8-915e-39cfc0aea16b)
 나머지 파일들은 `assets/img/favicons` 폴더에 넣어줍니다 <br/>
 그 다음 `_includes/favicons.html` 파일을 열어서 `href` 부분을 아래와 같이 수정해줍니다 <br/>
-
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/049db1e1-5f39-4737-b774-6d4b95ed08e0)
+그렇게 되면 Favicon이 적용된 것을 확인할 수 있습니다.
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/5f2b15d4-c71c-46bc-8818-7df112545c29)
 
 ## 프로필 사진 변경
 좌측 사이드바의 프로필 사진을 변경하려면 `assets/img` 폴더 아래에 원하시는 이미지를 추가합니다. <br/>
