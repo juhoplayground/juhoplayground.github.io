@@ -87,15 +87,14 @@ Repository에 많은 폴더가 존재하는데 각 폴더와 yml 파일의 내�
 나머지 파일들은 `assets/img/favicons` 폴더에 넣어줍니다 <br/>
 그 다음 `_includes/favicons.html` 파일을 열어서 `href` 부분을 아래와 같이 수정해줍니다 <br/>
 ![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/049db1e1-5f39-4737-b774-6d4b95ed08e0)
-그렇게 되면 Favicon이 적용된 것을 확인할 수 있습니다.
+그렇게 되면 Favicon이 적용된 것을 확인할 수 있습니다. <br/>
 ![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/5f2b15d4-c71c-46bc-8818-7df112545c29)
 
 ## 프로필 사진 변경
 좌측 사이드바의 프로필 사진을 변경하려면 `assets/img` 폴더 아래에 원하시는 이미지를 추가합니다. <br/>
 저는 `profile.jpg` 이라는 이미지를 추가하였습니다. <br/>
 그리고 `_inclues/sidebar.html`을 수정하면 됩니다. <br/>
-`<img src="{{- avatar_url -}}" width="112" height="112" alt="avatar" onerror="this.style.display='none'">` 이 부분을 <br/>
-`<img src="/assets/img/profile.jpg" width="112" height="112" alt="avatar" onerror="this.style.display='none'">` 이렇게 변경하면 됩니다. <br/>
+`<img src="{​{- avatar_url -}​}" width="112" height="112" alt="avatar" onerror="this.style.display='none'">`를 `<img src="/assets/img/profile.jpg" width="112" height="112" alt="avatar" onerror="this.style.display='none'">`로 변경하면 됩니다. <br/>
 혹은 src 부분에 원하는 이미지의 URL을 입력하면 됩니다.
 
 ## 검색결과 레이아웃 변경
@@ -108,8 +107,8 @@ Chirpy 테마에서 검색을 하면 결과물에 제목, 카테고리, 태그, 
 `_includes/search-loader.html`파일에서 `<p>{snippet}</p>`이 부분을 주석처리한다. <br/>
  
 2) 검색 결과물에 작성 날짜 출력하는 방법 <br/>
-`assets/js/data/search.json` 파일에서 `"date": "{{ post.date }}"`을 <br/>
-`"date": "{{ post.date | date: "%Y-%m-%d"}}",` 이렇게 변경한다. <br/>
+`assets/js/data/search.json` 파일에서 `"date": "{​{ post.date }​}"`을 <br/>
+`"date": "{​{ post.date | date: "%Y-%m-%d"}​}",` 이렇게 변경한다. <br/>
 그리고 `_includes/search-loader.html` 파일에서 주석으로 처리한 `<p>{snippet}</p>` 윗 라인에 <br/>
 `{date}`를 추가해준다. <br/>
 
