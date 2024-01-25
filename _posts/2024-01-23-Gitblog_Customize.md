@@ -99,7 +99,10 @@ Repository에 많은 폴더가 존재하는데 각 폴더와 yml 파일의 내�
 
 ## 검색결과 레이아웃 변경
 Chirpy 테마에서 검색을 하면 결과물에 제목, 카테고리, 태그, 내용이 포함되고 <br/>
-한 줄에 2개의 결과씩 출력이 되는 것을 확인할 수 있다.<br/>
+한 줄에 2개의 결과씩 출력이 되는 것을 확인할 수 있다.
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/492cc048-33d0-4573-922e-d5cdfbe0064a)
+<br/>
+
 우선 검색 결과물에 내용이 출력되지 않도록 하고 싶고<br/>
 언제 작성했는지 작성일자를 추가하고 싶다.<br/>
 
@@ -120,17 +123,56 @@ Chirpy 테마에서 검색을 하면 결과물에 제목, 카테고리, 태그, 
 
 
 위의 내용을 모두 반영하면 아래와 같이 한 줄에 1개의 검색 결과만 출력되게 변경된다. <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/083551a1-a2e1-49ad-99e1-3e4bd81f9a38)
+
 
 ## 이전글, 다음글 설정 변경
 다른 분들의 GitHub 블로그를 구경할때 현재 글의 주제와 상관없는 글로 다음글 설정이 되어있으면 <br/>
 글을 읽을 때 불편하다고 생각해서 카테고리별로 이전글, 다음글이 설정되었으면 좋겠다고 생각했다. <br/>
 
 `_includes/post-nav.html` 파일에서 이전, 다음글 설정을 할 수 있는데 <br/>
-`<nav>` 태그 하위의 내용을 <br/>
-아래의 이미지처럼 변경하면 <br/>
-카테고리의 첫 번째 글에서는 Previous가 표기되지 않고 <br/>
+`<nav>` 태그 하위의 내용을 아래와 같이 변경한다.<br/>
+
+```
+  ​{​% assign cat = page.categories[0] ​%​}​
+    ​{​% assign cat_list = site.categories[cat] ​%​}​
+    ​{​% for post in cat_list ​%​}​
+        ​{​% if post.url == page.url ​%​}​
+            ​{​% assign prevIndex = forloop.index0 | minus : 1 ​%​}​
+            ​{​% assign nextIndex = forloop.index0 | plus : 1 ​%​}​
+            ​{​% if forloop.first == false ​%​}​
+                ​{​% assign next_post = cat_list[prevIndex] ​%​}​
+            ​{​% endif ​%​}​
+            ​{​% if forloop.last == false ​%​}​
+                ​{​% assign prev_post = cat_list[nextIndex] ​%​}​
+            ​{​% endif ​%​}​
+            ​{​% break ​%​}​
+        ​{​% endif ​%​}​
+    ​{​% endfor ​%​}​
+    ​{​% if prev_post ​%​}​
+        <span class="previous-post">Previous :
+            <a href="{{ prev_post.url }}" class="pagination--pager">{{ site.data.ui-text[site.locale].pagination_previous}}{{ prev_post.title }}</a>
+        </span>
+    ​{​% else ​%​}​
+        <span class="previous-post">
+            <a href="#" class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_previous}}</a>
+        </span>
+    ​{​% endif ​%​}​
+
+    ​{​% if next_post ​%​}​
+        <span class="next-post">Next :
+            <a href="{{ next_post.url }}" class="pagination--pager">{{ site.data.ui-text[site.locale].pagination_next}}{{ next_post.title }}</a>
+        </span>
+    ​{​% else ​%​}​
+        <span class="next-post">
+            <a href="#" class="pagination--pager disabled">{{ site.data.ui-text[site.locale].pagination_next}}</a>
+        </span>
+    ​{​% endif ​%​}​
+```
+카테고리별로 이전글, 다음글 설정이 되면서 카테고리의 첫 번째 글에서는 Previous가 표기되지 않고 
 마지막글에서는 Next가 표기되지 않는다. <br/>
-카테고리의 글 순서는 `_posts` 폴더에 있는 md 파일의 YAML 프론트매터를 사용하여 메타데이터를 지정합니다. <br/>
+
+카테고리의 글 순서는 `_posts` 폴더에 있는 md 파일의 YAML 프론트매터를 사용하여 메타데이터를 지정한다. <br/>
 메타데이터 중 `date` 필더를 기반으로 포스트가 정렬됩니다. <br/>
 
 만약 날짜 이외의 다른 기준으로 포스트를 정렬하고 싶다면 `_config.yml` 파일에서<br/>
