@@ -23,7 +23,7 @@ Chirpy는 기본적으로 Disqus를 지원합니다. <br/>
 1. [Giscus 적용방법](#giscus-적용방법)
   - 1) [Giscus App 설치](#1-giscus-app-설치)
   - 2) [Discussions 활성화](#2-discussions-활성화)
-  - 3) [Giscus 추가](#3-giscus-추가)
+  - 3) [Giscus 추가](#3-giscus를-github-blog에-추가)
 
 
 <br/>
