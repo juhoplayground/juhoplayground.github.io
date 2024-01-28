@@ -44,25 +44,36 @@ Giscus는 [GitHub Discussions 검색 API](https://docs.github.com/en/graphql/gui
 #### 1) Giscus App 설치
 [Giscus APP](https://github.com/apps/giscus)을 댓글을 저장할 Repository에 설치하면 된다. <br/>
 `Read more about this app on the Marketplace.`를 클릭한 다음 <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/d8a0314c-f655-4c4a-90ec-b4feb5b45d48)
+
 녹색 `Set up a plan` 버튼을 클릭한 다음 <br/>
+
 우측의 `Install it for free` 버튼을 클릭하여 설치한다. <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/167fb2b2-9fc3-4f75-876e-36d24212e1b5)
 
 #### 2) Discussions 활성화
 `Settings > General > Features`에서 Discussions를 체크해서 활성화한다. <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/c1dc2d11-7d48-4550-8d4a-51ee6d02a53f)
 
 #### 3) Giscus를 GitHub Blog에 추가
 > ① [Giscus](https://giscus.app/ko)에서 설정 부분으로 이동한다. <br/>
 > ② `저장소` 섹션을 찾아서 GitHub Blog Repository를 입력합니다. <br/>
 > - 위의 단계를 정상적으로 하면 아래와 같이 확인됩니다. <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/c6b1c1d7-4241-470b-afea-b0a1ac481292)
 > - 만약 통과하지 못했다면, 위의 내용을 다시 확인해서 시도하면 됩니다. <br/>
 
 > ③ GitHub Blog 페이지와 Discussions을 연동할 방법을 선택합니다. <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/bd1f6c38-69c4-41f8-95f8-18f99c2b0afc)
 > ④ Discussion 카테고리를 설정합니다. <br/>
 > - Announcements 유형의 카테고리를 권장하므로 Announcements로 선택합니다. <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/511bc945-60af-4aa8-9bff-136538f3893a)
 
 > ⑤ 특정 기능 추가 <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/d798db0e-677e-4d6a-9523-46c3b08461a9)
 > ⑥ 테마 선택  <br/>
+![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/b67581ce-cc9f-43b4-ac73-e362fc322a75)
 > ⑦ 생성된 Script 태그를 웹 페이지에 추가합니다. <br/>
+`_layouts/post.html` 파일에서 원하는 위치에 추가하면 됩니다.<br/>
 
 ---
 다음에는 구글 검색 가능하게 해보도록 하겠습니다.
