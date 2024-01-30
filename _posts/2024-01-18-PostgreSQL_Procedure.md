@@ -55,6 +55,8 @@ END;
 <br/>
 
 ## PL/pgSQL - Procedure
+PostgreSQL Procedure는 처리 결과를 Return할 수 없다.
+
 #### 1) 기본적인 Procedure 생성
 ```sql
 CREATE OR REPLACE PROCEDURE sample_procedure()
