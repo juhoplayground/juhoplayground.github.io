@@ -18,8 +18,7 @@ title: Juho's Dev Note # the main title
 
 tagline: 공부하고 기록하고 # it will display as the sub-title
 
-description: >- # used by seo meta and the atom feed
-  "개발자의 일상을 담은 Git 블로그. 코딩 팁, 기술 리뷰, 그리고 소프트웨어 개발에 관한 다양한 주제를 다룹니다."
+description: "개발자의 일상을 담은 Git Blog"
 
 # Fill in the protocol & hostname for your site.
 # e.g. 'https://username.github.io', note that it does not end with a '/'.
