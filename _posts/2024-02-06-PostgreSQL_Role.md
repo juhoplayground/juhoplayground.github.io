@@ -25,7 +25,6 @@ toc : True
 1. [사용자 확인](#사용자-확인)
 2. [사용자 생성](#사용자-생성)
  - 1) [Option Parameters](#option-parameters)
-3. [사용자 생성](#사용자-생성)
 
 ## 사용자 확인
 현재 사용자 정보를 확인할때는 `pg_user` 혹은`pg_shadow` 을 사용하면 된다.<br/>
