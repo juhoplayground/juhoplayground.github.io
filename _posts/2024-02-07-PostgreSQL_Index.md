@@ -1,6 +1,6 @@
 ---
 layout: post
-title: PostgreSQL PL/pgSQL - Index 기초
+title: PostgreSQL - Index 기초
 author: 'Juho'
 date: 2024-02-07 13:00:00 +0900
 categories: [PostgreSQL, Database, Index]

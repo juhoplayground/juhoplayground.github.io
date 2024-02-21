@@ -1,6 +1,6 @@
 ---
 layout: post
-title: PostgreSQL PL/pgSQL - Index B-Tree VS BRIN
+title: PostgreSQL - Index B-Tree VS BRIN
 author: 'Juho'
 date: 2024-02-21 09:00:00 +0900
 categories: [PostgreSQL, Database, Index]

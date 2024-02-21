@@ -1,6 +1,6 @@
 ---
 layout: post
-title: PostgreSQL PL/pgSQL - Index Type
+title: PostgreSQL - Index Type
 author: 'Juho'
 date: 2024-02-15 09:00:00 +0900
 categories: [PostgreSQL, Database, Index]
