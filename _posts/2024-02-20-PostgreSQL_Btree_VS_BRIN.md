@@ -22,7 +22,7 @@ toc : True
 </style>
 
 ## 목차
-1. [Index Type](#index-type)
+1. [지원하는 Index 타입 확인](#지원하는-index-타입-확인)
 2. [Sample Table 생성](#sample-table-생성)
 3. [테스트 케이스 1 (인덱스 X, 병렬처리 X)](#테스트-케이스-1-인덱스-x-병렬처리-x)
 4. [테스트 케이스 2 (인덱스 X, 병렬처리 O)](#테스트-케이스-2-인덱스-x-병렬처리-o)
