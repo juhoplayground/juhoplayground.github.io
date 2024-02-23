@@ -22,8 +22,8 @@ toc : True
 </style>
 
 ## 목차
-1. [VACUUM이란?](#VACUUM이란)
-2. [VACUUM 옵션](#VACUUM-옵션)
+1. [VACUUM이란?](#vacuum이란)
+2. [VACUUM 옵션](#vacuum-옵션)
 3. [vacuumdb](#vacuumdb)
 4. [비용 기반 VACUUM Delay](#비용-기반-vacuum-delay)
 5. [Routine Vacuuming](#routine-vacuuming)
@@ -569,6 +569,250 @@ Autovacuum Daemon
 > 정기적으로 SHARE UPDATE EXCLUSIVE lock과 충돌하는 lock을 획득하는 명령(ex: ANALYZE)을 실행하면 autovacuum이 영원히 완료되지 않을 수 있으므로 주의해야 한다.<br/>
 
 ## VACUUM Progress Reporting
-<!-- https://www.postgresql.org/docs/current/progress-reporting.html#VACUUM-PROGRESS-REPORTING-->
+VACUUM이 실행 중일 때, pg_stat_progress_vacuum view는 현재 VACUUM 작업을 수행 중인 각 백엔드(autovacuum worker process 포함)에 대해 하나의 row를 포함하게 된다.<br/>
+아래 테이블은 보고될 정보를 설명하고 해석하는 방법이다.<br/>
+
+pg_stat_progress_vacuum View
+<table>
+  <tr>
+      <td>Column명</td>
+      <td>타입</td>
+      <td>설명</td>
+  </tr>
+  <tr>
+      <td>pid</td>
+      <td>integer</td>
+      <td>백엔드의 프로세스 ID</td>
+  </tr>
+  <tr>
+      <td>datid</td>
+      <td>oid</td>
+      <td>백엔드가 연결된 데이터베이스의 OID</td>
+  </tr>
+  <tr>
+      <td>datname</td>
+      <td>name</td>
+      <td>백엔드가 연결된 데이터베이스의 이름</td>
+  </tr>
+  <tr>
+      <td>relid</td>
+      <td>oid</td>
+      <td>VACUUM 작업이 수행 중인 테이블의 OID</td>
+  </tr>
+  <tr>
+      <td>phase</td>
+      <td>text</td>
+      <td>VACUUM의 현재 처리 단계</td>
+  </tr>
+  <tr>
+      <td>heap_blks_total</td>
+      <td>bigint</td>
+      <td>테이블에 있는 총 힙 블록의 수.<br/>
+      이 숫자는 스캔이 시작된 시점의 것으로 보고 됨.<br/>
+      나중에 추가된 블록은 이 VACUUM에 의해 방문되지 않을 뿐더러 방문할 필요도 없다.</td>
+  </tr>
+  <tr>
+      <td>heap_blks_scanned</td>
+      <td>bigint</td>
+      <td>스캔된 힙 블록의 수<br/>
+      visibility map을 사용하여 스캔을 최적화하므로 일부 블록은 검사 없이 건너뛴다.<br/>
+      건너뛴 블록은 이 총합에 포함되어 있으므로 VACUUM이 완료될 때 이 숫자는 결국 heap_blks_total과 동일해진다.<br/>
+      이 카운터는 단계가 힙을 스캔할 때만 진행된다.</td>
+  </tr>
+  <tr>
+      <td>heap_blks_vacuumed</td>
+      <td>bigint</td>
+      <td>VACUUM이 진행 중인 힙 블록의 수<br/>
+      테이블에 인덱스가 없는 경우를 제외하고 이 카운터는 힙을 VACUUM하는 단계일 때만 진행된다.<br/>
+      Dead tuple이 포함되지 않은 블록은 건너뛰기 때문에 이 카운터는 때로는 큰 증분으로 앞으로 건너갈 수 있다.</td>
+  </tr>
+  <tr>
+      <td>index_vacuum_count</td>
+      <td>bigint</td>
+      <td>완료된 인덱스 VACUUM 주기</td>
+  </tr>
+  <tr>
+      <td>max_dead_tuples</td>
+      <td>bigint</td>
+      <td>maintenance_work_mem을 기반으로 index VACUUM 주기를 수행하기 전에 저장할 수 있는 dead tuple의 수</td>
+  </tr>
+  <tr>
+      <td>num_dead_tuples</td>
+      <td>bigint</td>
+      <td>마지막 인덱스 진공 VACUUM 이후 수집된 dead tuple의 수</td>
+  </tr>
+</table>
+
+VACUUM 단계
+<table>
+  <tr>
+      <td>단계</td>
+      <td>설명</td>
+  </tr>
+  <tr>
+      <td>initializing</td>
+      <td>VACUUM이 힙을 스캔하기 위해 준비 중<br>
+      이 단계는 매우 짧음</td>
+  </tr>
+  <tr>
+      <td>scanning heap</td>
+      <td>VACUUM이 현재 힙을 스캔 중<br/>
+      필요한 경우 각 페이지를 가지치기하고 조각 모음을 수행하며, 필요한 경우 freezing 작업을 수행할 수 있다.<br/>
+      스캔의 진행 상황을 모니터링하는 데 heap_blks_scanned 열을 사용할 수 있다.</td>
+  </tr>
+  <tr>
+      <td>vacuuming indexes</td>
+      <td>VACUUM이 현재 인덱스를 VACUUM 중. 테이블에 인덱스가 있는 경우, 힙이 완전히 스캔된 후에 이 작업이 최소 한 번 발생한다.<br/>
+      maintenance_work_mem(또는 autovacuum이 설정된 경우 autovacuum_work_mem)에 저장할 수 있는 dead tuple의 수가 충분하지 않으면 한 번 이상 발생할 수 있다.</td>
+  </tr>
+  <tr>
+      <td>vacuuming heap</td>
+      <td>VACUUM이 현재 힙을 VACUUM 중.<br/>
+       힙을 VACUUM하는 것은 힙을 스캔하는 것과 구분되며, 각 인덱스 VACUUM 후에 실행된다.<br/>
+       만약 heap_blks_scanned가 heap_blks_total보다 작은 경우, 시스템은 이 단계가 완료된 후에 힙을 스캔하기 위해 돌아간다.<br/>
+       그렇지 않으면, 이 단계가 완료된 후에 인덱스를 정리하기 시작한다.</td>
+  </tr>
+  <tr>
+      <td>cleaning up indexes</td>
+      <td>VACUUM이 현재 인덱스를 정리 중.<br/>
+      힙이 완전히 스캔되고 모든 인덱스와 힙의 VACUUM이 완료된 후에 실행된다.</td>
+  </tr>
+  <tr>
+      <td>truncating heap</td>
+      <td>VACUUM이 현재 힙을 truncate하고 relation의 끝에 빈 페이지를 운영 체제로 반환한다.<br/>
+      인덱스를 정리한 후에 실행된다.</td>
+  </tr>
+  <tr>
+      <td>performing final cleanup</td>
+      <td>VACUUM이 최종 정리를 수행 중.<br/>
+      이 단계에서 VACUUM은 빈 space map을 VACUUM하고 pg_class에서 통계를 업데이트하며, 누적 통계 시스템에 통계를 보고한다.<br/>
+      이 단계가 완료되면 VACUUM이 종료됩니다.</td>
+  </tr>
+</table>
+
 ## VACUUM FULL Progress Reporting
-<!-- https://www.postgresql.org/docs/current/progress-reporting.html#CLUSTER-PROGRESS-REPORTING-->
+pg_stat_progress_cluster view에는 현재 해당 명령을 실행 중인 각 백엔드에 대한 row가 포함된다.<br/>
+아래 테이블은 보고될 정보를 설명하고 해석하는 방법이다.<br/>
+
+
+<table>
+  <tr>
+      <td>Column명</td>
+      <td>타입</td>
+      <td>설명</td>
+  </tr>
+  <tr>
+      <td>pid </td>
+      <td>integer</td>
+      <td>백엔드의 프로세스 ID</td>
+  </tr>
+  <tr>
+      <td>datid </td>
+      <td>oid</td>
+      <td>백엔드가 연결된 데이터베이스의 OID</td>
+  </tr>
+  <tr>
+      <td>datname</td>
+      <td>name</td>
+      <td>백엔드가 연결된 데이터베이스의 이름</td>
+  </tr>
+  <tr>
+      <td>relid </td>
+      <td>oid</td>
+      <td>클러스터링되고 있는 테이블의 OID</td>
+  </tr>
+  <tr>
+      <td>command </td>
+      <td>text</td>
+      <td>실행 중인 명령어.<br/>
+          CLUSTER 또는 VACUUM FULL 중 하나</td>
+  </tr>
+  <tr>
+      <td>phase </td>
+      <td>text</td>
+      <td>현재 처리 단계</td>
+  </tr>
+  <tr>
+      <td>cluster_index_relid </td>
+      <td>oid</td>
+      <td>테이블이 인덱스를 사용하여 스캔되는 경우 사용되는 인덱스의 OID.<br/>
+          그렇지 않으면 0</td>
+  </tr>
+  <tr>
+      <td>heap_tuples_scanned </td>
+      <td>bigint</td>
+      <td>힙 튜플이 스캔된 횟수.<br/>
+          카운터는 phase가 힙을 순차 스캔하거나 인덱스를 스캔하거나 새로운 힙을 작성할 때만 증가함.</td>
+  </tr>
+  <tr>
+      <td>heap_tuples_written </td>
+      <td>bigint</td>
+      <td>힙 튜플이 작성된 횟수.<br/>
+      카운터는 phase가 힙을 순차 스캔하거나 인덱스를 스캔하거나 새로운 힙을 작성할 때만 증가함.</td>
+  </tr>
+  <tr>
+      <td>heap_blks_total </td>
+      <td>bigint</td>
+      <td>테이블에 있는 총 힙 블록의 수.<br/>
+        힙을 순차 스캔하기 시작한 시점을 기준으로 보고됨.</td>
+  </tr>
+  <tr>
+      <td>heap_blks_scanned </td>
+      <td>bigint</td>
+      <td>힙을 순차 스캔하는 경우에만 이 카운터가 증가함</td>
+  </tr>
+  <tr>
+      <td>index_rebuild_count </td>
+      <td>bigint</td>
+      <td>인덱스를 다시 작성하는 단계일 때만 이 카운터가 증가함</td>
+  </tr>
+</table>
+
+VACUUM FULL 단계
+<table>
+  <tr>
+      <td>단계</td>
+      <td>설명</td>
+  </tr>
+  <tr>
+      <td>initializing</td>
+      <td>명령이 힙을 스캔하기 위해 준비 중<br>
+      이 단계는 매우 짧음</td>
+  </tr>
+  <tr>
+      <td>seq scanning heap</td>
+      <td>현재 명령은 순차 스캔을 사용하여 테이블을 스캔하고 있음</td>
+  </tr>
+  <tr>
+      <td>index scanning heap</td>
+      <td>CLUSTER가 현재 인덱스 스캔을 사용하여 테이블을 스캔 중</td>
+  </tr>
+  <tr>
+      <td>sorting tuples</td>
+      <td>CLUSTER가 현재 튜플을 정렬 중</td>
+  </tr>
+  <tr>
+      <td>writing new heap</td>
+      <td>CLUSTER가 현재 새로운 힙을 작성 중</td>
+  </tr>
+  <tr>
+      <td>swapping relation files</td>
+      <td>현재 명령은 새로 작성된 파일을 그 자리에 교체 중</td>
+  </tr>
+  <tr>
+      <td>rebuilding index</td>
+      <td>현재 명령은 인덱스를 다시 작성 중</td>
+  </tr>
+  <tr>
+      <td>performing final cleanup</td>
+      <td>현재 명령은 최종 정리를 수행 중<br/>
+      이 단계가 완료되면 VACUUM FULL이 종료됨</td>
+  </tr>
+
+</table>
+
+<br/>
+
+---
+
+다음 글로는 Vacuum 관련 파라미터를 수정하여 튜닝하는 방법에 대해서 작성하려고 한다.<br>
