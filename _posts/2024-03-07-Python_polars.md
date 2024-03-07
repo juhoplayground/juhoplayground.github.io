@@ -4,7 +4,7 @@ title: Python - Polars
 author: 'Juho'
 date: 2024-03-07 09:00:00 +0900
 categories: [Python, Polars]
-tags: [PostgreSQL, Polars]
+tags: [Python, Polars]
 pin: True
 toc : True
 ---
