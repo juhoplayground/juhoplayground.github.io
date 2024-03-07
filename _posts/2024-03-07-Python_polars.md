@@ -22,7 +22,7 @@ toc : True
 </style>
 
 ## 목차
-1. [Polars를 찾게 된 이유](#polars를-찾게-된-이유)
+1. [Polars를 찾게 된 이유](#polars-찾게-된-이유)
 2. [Polars란?](#polars란)
 3. [Polars 기초 문법](#polars-기초-문법)
 
@@ -32,7 +32,7 @@ toc : True
 [H20의 벤치마크 결과](https://h2oai.github.io/db-benchmark/){:target="_blank"}를 보면 대부분의 경우에 Pandas보다 Polars가 빠른 속도를 보인다.<br/>
 
 
-## polars란?
+## Polars란?
 [Polars](https://docs.pola.rs/py-polars/html/reference/){:target="_blank"}는 Rust로 구현된 데이터 처리 및 분석 도구로 Pandas와 비슷한 API를 제공한다.<br/>
 차이점으로는 Polars는 Dataframe에 인덱스를 사용하지 않아 데이토 조작이 간편하다.<br/>
 내부 데이터 표현에 Apache Arrow 배열을 사용하여 로드 시간, 메모리 사용량 및 계산 효율성이 높다.<br/>
