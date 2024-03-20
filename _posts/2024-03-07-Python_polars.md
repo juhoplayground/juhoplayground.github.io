@@ -3,8 +3,8 @@ layout: post
 title: Python - Polars
 author: 'Juho'
 date: 2024-03-07 09:00:00 +0900
-categories: [Python, Polars]
-tags: [Python, Polars]
+categories: [Polars]
+tags: [Polars, python]
 pin: True
 toc : True
 ---
