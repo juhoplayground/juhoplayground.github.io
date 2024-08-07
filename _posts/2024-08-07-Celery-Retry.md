@@ -23,10 +23,6 @@ toc : True
 
 ## 목차
 1. [Celery 재시도](#celery-재시도)
-2. [Celery 설치](#celery-설치)
-3. [Celery Redis 연결](#celery-redis-연결)
-4. [Celery Daemon](#celery-daemon)
-5. [Celery 예시](#celery-예시)
 
 ## Celery 재시도
 ```
