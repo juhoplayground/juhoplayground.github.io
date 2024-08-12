@@ -162,6 +162,11 @@ WantedBy=multi-user.target
 `Pool` 탭에서 `Max concurrency`각 데몬에서 설정한 것 처럼 4, 2로 설정된 것을 확인할 수 있다.<br/>
 그리고 `Queue` 탭에서 데몬에서 설정한 Queue의 이름이 보이는 것을 확인할 수 있다.<br/>
 
+celery.conf["task_routes"]에 디렉토리별로 queue, exchange를 설정하면 설정한 값대로 자동으로 큐를 선택한다.<br/>
+하지만 task_routes에 지정되지 않는 작업을 특정 큐로 보내고 싶다면 <br/>
+task에 `@celery.task(bind=True, max_retries=5, acks_late=True, queue="other", exchange="other")` <br/>
+혹은 `@celery.task(bind=True, max_retries=5, acks_late=True, queue="default", exchange="default")` 이런식으로 직접 설정을 하면 된다.
+이렇게 하면 함수별로 명시적으로 지정이 된다.<br/>
 
 ---
 
