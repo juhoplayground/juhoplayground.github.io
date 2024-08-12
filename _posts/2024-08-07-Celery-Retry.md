@@ -26,7 +26,7 @@ toc : True
 
 ## Celery 재시도
 ```
-from celery.exceptions import MaxRetriesExceededError, WorkerShutdown
+from celery.exceptions import MaxRetriesExceededError, WorkerShutdown, WorkerLostError
 
 @celery.task(bind=True, max_retries=5, acks_late=True)
 def some_task(self, params):
@@ -34,6 +34,9 @@ def some_task(self, params):
     do-something
   except MaxRetriesExceededError as e:
     self.update_state(state='FAILURE', meta={'exc_type': type(e).__name__, 'exc_message': e.__str__()})
+  except WorkerLostError as e:
+    countdown = (2 * (self.request.retries + 1)) * 5
+    raise self.retry(exc=e, countdown=countdown)
   except WorkerShutdown as e:
     countdown = (2 * (self.request.retries + 1)) * 5
     raise self.retry(exc=e, countdown=countdown)
@@ -59,9 +62,19 @@ def some_task(self, params):
 이 예외는 작업이 재시도 한계를 넘어서서 실패했음을 나타낸다.<br/>
 `@celery.task(bind=True, max_retries=5, acks_late=True)`에서 max_retries를 5로 설정했기 때문에<br/>
 5회를 초과하면 해당 내용의 오류가 발생하게 되고 더 이상 재시도 하지 않고 `FAILURE` 처리를 한다.<br/>
+
+`WorkerLostError`는 일반적으로 워커 프로세스가 작업을 완료하지 못하고 중간에 사라졌을 때 발생한다.<br/>
+1) 메모리 부족 : 작업을 수행하는 동안 워커가 과도한 메모리를 사용하면 운영 체제가 워커 프로세스를 강제로 종료할 수 있다. <br/>
+2) 시간 초과 : 작업이 지정된 시간 내에 완료되지 않으면 Celery가 워커를 강제로 종료시킬 수 있다.<br/>
+-> `soft time limit`이나 `hard time limit`이 원인일 수 있다.<br/>
+3) 프로세스 충돌 : 워커 프로세스가 충돌하거나 비정상적으로 종료되면, Celery는 작업이 사라진 것으로 간주하고 WorkerLostError를 발생한다.<br/>
+4) 워커 재시작 : Celery 워커 프로세스가 수동 또는 자동으로 재시작될 때, 현재 실행 중이던 작업이 중단되면서 이 오류가 발생할 수 있다.<br/>
+5) 네트워크 문제 : 분산된 Celery 환경에서 워커와 브로커(예: Redis, RabbitMQ) 간의 네트워크 연결이 끊기면 워커가 작업을 완료하지 못하고 이 오류가 발생할 수 있다.<br/>
+
  
-`WorkerShutdown`는 Celery 워커가 종료되었을 때 발생한다. 워커 프로세스가 중지되거나 재시작되는 경우에도 이 예외가 발생할 수 있다.<br/>
-워커 프로세스가 중지되거나, 재시작되어도 다시 해당 작업을 재시도한다. <br/>
+`WorkerShutdown`는 Celery 워커가 정상적으로 종료되었을 때 발생한다.<br/>
+워커가 의도적으로 종료되었으며, 시스템이 이를 인식하고 있는 상황이다.<br/>
+하지만 `SIGTERM` 신호에 의해 종료되는 것을 막고자 추가했다.<br/>
 
 
 ---
