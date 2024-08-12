@@ -117,6 +117,14 @@ celery.conf["task_routes"] = {
     }
 }
 ```
+`task_default_queue`로 기본 queue를 `default`로 지정하고 `task_default_exchange_type`를 `direct`로 설정한다.<br/>
+`task_default_exchange_type`는 Celery에서 작업 큐를 처리할 때 교환 타입을 설정해서 메시지를 어떻게 분배할지를 결정하는데 사용된다.<br/>
+- Direct Exchange: 메시지가 라우팅 키와 일치하는 큐로 직접 전달된다. <br/>
+- Topic Exchange: 메시지가 라우팅 키의 패턴과 일치하는 큐로 전달된다. <br/>
+- Fanout Exchange: 모든 바인딩된 큐로 메시지를 브로드캐스트된다. <br/>
+- Headers Exchange: 메시지 헤더에 기반해 큐로 라우팅한다. <br/>
+
+
 
 그 다음 `systemctl restart celery-default.service` 파일을 수정한다.<br/>
 ```
@@ -164,8 +172,7 @@ WantedBy=multi-user.target
 
 celery.conf["task_routes"]에 디렉토리별로 queue, exchange를 설정하면 설정한 값대로 자동으로 큐를 선택한다.<br/>
 하지만 task_routes에 지정되지 않는 작업을 특정 큐로 보내고 싶다면 <br/>
-task에 `@celery.task(bind=True, max_retries=5, acks_late=True, queue="other", exchange="other")` <br/>
-혹은 `@celery.task(bind=True, max_retries=5, acks_late=True, queue="default", exchange="default")` 이런식으로 직접 설정을 하면 된다.
+task에 `@celery.task(bind=True, max_retries=5, acks_late=True, queue="new", exchange="new")` 이런식으로 직접 설정을 하면 된다. <br/>
 이렇게 하면 함수별로 명시적으로 지정이 된다.<br/>
 
 ---
