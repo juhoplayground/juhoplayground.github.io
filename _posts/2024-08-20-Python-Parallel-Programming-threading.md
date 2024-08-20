@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Python 병렬 프로그래밍 - (1)
+title: Python 병렬 프로그래밍 - (1) thread, ThreadPoolExecutor
 author: 'Juho'
 date: 2024-08-20 09:00:00 +0900
 categories: [Python]
