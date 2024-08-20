@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Python 병렬 프로그래밍 - (1) - threading 모듈
+title: Python 병렬 프로그래밍 - (1)
 author: 'Juho'
 date: 2024-08-20 09:00:00 +0900
 categories: [Python]
-tags: [Python]
+tags: [Python, thread, threading, threadpool, threadpoolexcutor]
 pin: True
 toc : True
 ---
@@ -22,27 +22,21 @@ toc : True
 </style>
 
 ## 목차
-1. [threading 모듈](#threading-모듈)
-2. [thread란?](#thread란)
-3. [thread 장,단점](#thread-장단점)
+1. [thread란?](#thread란)
+2. [thread 장,단점](#thread-장단점)
  - 1) [장점](#1-장점)
  - 2) [단점](#2-단점)
-4. [thread 종류](#thread-종류)
+3. [thread 종류](#thread-종류)
  - 1) [커널 수준 Thread(Kernel-Level Thread)](#1-커널-수준-threadkernel-level-thread)
  - 2) [사용자 수준 Thread(User-Level Thtread)](#2-사용자-수준-threaduser-level-thtread)
  - 3) [Hybrid Thread](#3-hybrid-thread)
-5. [thread 상태 정의](#thread-상태-정의)
-6. [threading 모듈 사용하는 방법](#threading-모듈-사용하는-방법)
-7. [ThreadPoolExecutor](#threadpoolexecutor)
-
-## threading 모듈
-threading 모듈은 _thread 모듈의 추상화 계층을 제공해서 thread 기반의 병렬 시스템을 개발할 수 있는 함수들을 제공한다. <br/>
-threading 모듈에 대해서 이야기하기전에 thread가 무엇인지에 대해서 먼저 이야기하려고 한다.<br/>
-또환 threading 모듈에 대한 자세한 내용은 [threading](https://docs.python.org/3/library/threading.html){:target="_blank"} 에서 확인해볼 수 있다. <br/>
+4. [thread 상태 정의](#thread-상태-정의)
+5. [threading 모듈 사용하는 방법](#threading-모듈-사용하는-방법)
+6. [ThreadPoolExecutor 사용하는 방법](#threadpoolexecutor-사용하는-방법)
 
 
 ## thread란?
-thread기반이라고 하였는데 그럼 thread란 무엇일까? <br/>
+thread란 무엇일까? <br/>
 thread는 프로그램의 실행 흐름을 나누어 병렬로 작업을 수행할 수 있도록 하는 기능이다.<br/>
 thread를 사용하면 하나의 프로세스 내에서 여러 작업을 동시에 실행할 수 있다.<br/>
 
@@ -101,9 +95,116 @@ thread의 생명주기는 5단계로 나타낼 수 있다.<br/>
 
 
 ## threading 모듈 사용하는 방법
+threading 모듈은 _thread 모듈의 추상화 계층을 제공해서 thread 기반의 병렬 시스템을 개발할 수 있는 함수들을 제공한다. <br/>
+threading 모듈은 thread를 개발자가 직접 관리할 수 있게 해준다.<br/>
+그래서 thread의 생명주기, 동기화 문제, 예외 처리 등을 개발자가 직접 관리해야 한다.<br/>
+장점은 thread를 세밀하게 제어할 수 있어 복잡한 thread 관리가 필요한 경우에 유리하다.<br/>
+단점은 thread 수가 많아지면 관리가 복잡해질 수 있고, thread pool 과 같은 추상화가 없기 때문에 더 많은 코딩을 해야 한다.<br/>
+threading 모듈에 대한 자세한 내용은 [threading](https://docs.python.org/3/library/threading.html){:target="_blank"} 에서 확인해볼 수 있다. <br/>
 ```python
+from queue import Queue
+import threading
+import requests
+import re
+
+
+shared_queue = Queue()
+input_list = ['https://www.samsung.com', 'https://www.samsung.com/sec/event/samsung-monitor/', 'https://www.samsung.com/sec/event/2024-tv-launching/',
+              'https://www.samsung.com/sec/event/best_items/', 'https://www.samsung.com/sec/event/bespoke-refrigerator/', 'https://www.samsung.com/sec/event/kimchi-refrigerator/',
+              'https://www.samsung.com/sec/event/bespoke-grande-ai/', 'https://www.samsung.com/sec/event/bespoke-jet-air-cleaner/', 'https://www.samsung.com/sec/event/air-conditioners-inhome/',
+              'https://www.samsung.com/sec/event/kitchen-appliance/']
+input_list = input_list * 100
+
+results = {}
+queue_condition = threading.Condition()
+button_id_regex = re.compile(r'<button\s(?:.*?\s)*?id=[\'"](.*?)[\'"].*?>', re.IGNORECASE)
+link_regex = re.compile(r'<a\s(?:.*?\s)*?href=[\'"](.*?)[\'"].*?>')
+
+
+def crawl_website(condition):
+    with condition:
+        while shared_queue.empty():
+            condition.wait()
+        else:
+            url = shared_queue.get()
+            request_data = requests.get(url)
+            button = button_id_regex.findall(request_data.text)
+            
+            link = link_regex.findall(request_data.text)
+            results[url] = {'button': button, 'link': link}
+            shared_queue.task_done()
+
+
+def setup_queue(condition):
+    with condition:
+        for item in input_list:
+            shared_queue.put(item)
+        condition.notify_all()
+
+
+if __name__  == '__main__':
+    threads_1 = [threading.Thread(name=f'crawl_task_{i}',daemon=True, target=crawl_website, args=(queue_condition,)) for i in range(len(input_list))]
+    [thread.start() for thread in threads_1]
+
+    threads_2 = threading.Thread(name='setup_queue', daemon=True, target=setup_queue, args=(queue_condition,))
+    threads_2.start()
+
+    [thread.join() for thread in threads_1]
 ```
 
-## ThreadPoolExecutor
+## ThreadPoolExecutor 사용하는 방법
+concurrent.futures 모듈에서 제공하는 클래스 중 하나로, thread 기반의 병렬 처리를 손쉽게 구현할 수 있게 해주는 함수를 제공한다.<br/>
+thread pool을 제공하여 thread 관리를 더 간편하게 해준다.<br/>
+thread pool은 일정 수의 thread를 미리 생성하고, 작업을 queue에 넣어 관리를 한다.<br/>
+그렇기 때문에 thread 수를 개발자가 직접 제어할 필요가 없고, thread 관리의 복잡함을 줄일 수 있다.<br/>
+장점은 thread pool을 이용해 thread 수를 조절하고 관리하는 것이 간편하다.<br/>
+단점은 thread를 직접 제어하거나 thread 관리가 필요한 경우에는 유연성이 부족하다.<br/>
+또한 ThreadPoolExecutor에 대한 자세한 내용은 [ThreadPoolExecutor](https://docs.python.org/3/library/concurrent.futures.html){:target="_blank"} 에서 확인해볼 수 있다. <br/>
 ```python
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from queue import Queue
+import requests
+import re
+import os
+
+
+shared_queue = Queue()
+input_list = ['https://www.samsung.com', 'https://www.samsung.com/sec/event/samsung-monitor/', 'https://www.samsung.com/sec/event/2024-tv-launching/',
+              'https://www.samsung.com/sec/event/best_items/', 'https://www.samsung.com/sec/event/bespoke-refrigerator/', 'https://www.samsung.com/sec/event/kimchi-refrigerator/',
+              'https://www.samsung.com/sec/event/bespoke-grande-ai/', 'https://www.samsung.com/sec/event/bespoke-jet-air-cleaner/', 'https://www.samsung.com/sec/event/air-conditioners-inhome/',
+              'https://www.samsung.com/sec/event/kitchen-appliance/']
+input_list = input_list * 100
+
+results = {}
+button_id_regex = re.compile(r'<button\s(?:.*?\s)*?id=[\'"](.*?)[\'"].*?>', re.IGNORECASE)
+link_regex = re.compile(r'<a\s(?:.*?\s)*?href=[\'"](.*?)[\'"].*?>')
+
+
+def crawl_website(url):
+    request_data = requests.get(url)
+    button = button_id_regex.findall(request_data.text)
+            
+    link = link_regex.findall(request_data.text)
+    return {url: {'button': button, 'link': link}}
+        
+
+def setup_queue(url):
+    shared_queue.put(url)
+
+
+if __name__  == '__main__':
+    max_workers = os.cpu_count()
+    with ThreadPoolExecutor(max_workers=max_workers) as setup_queue_threads:
+        future_tasks = [setup_queue_threads.submit(setup_queue, item) for item in input_list]
+        for future in as_completed(future_tasks):
+            pass
+        
+    with ThreadPoolExecutor(max_workers=max_workers) as crawl_website_threads:
+        future_tasks = []
+        while not shared_queue.empty():
+            url = shared_queue.get()
+            future_tasks.append(crawl_website_threads.submit(crawl_website, url))
+            
+        for future in as_completed(future_tasks):
+            results.update(future.result())
 ```
