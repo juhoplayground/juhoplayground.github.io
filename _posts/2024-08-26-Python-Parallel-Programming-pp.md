@@ -22,7 +22,7 @@ toc : True
 </style>
 
 ## 목차
-1. [pp란?](#joblib이란)
+1. [pp란?](#pp란)
 2. [pp 사용하는 방법](#)
 
 ## pp란?
