@@ -2,7 +2,7 @@
 layout: post
 title: RabbitMQ - "All stable feature flags must be enabled after completing an upgrade." 
 author: 'Juho'
-date: 2024-06-04 09:00:00 +0900
+date: 2024-09-10 09:00:00 +0900
 categories: [RabbitMQ]
 tags: [RabbitMQ, Celery, Python]
 pin: True
