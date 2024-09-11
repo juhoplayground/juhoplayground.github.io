@@ -2,7 +2,7 @@
 layout: post
 title: Pytorch로 RNN timeseries 예측
 author: 'Juho'
-date: 2024-09-10 09:00:00 +0900
+date: 2024-09-11 09:00:00 +0900
 categories: [Python]
 tags: [Python, Pytorch, RNN]
 pin: True
@@ -243,10 +243,44 @@ train_loader에서 데이터를 배치 단위로 가져와 모델에 입력하�
 valid_loader에 대해 모델의 성능을 평가, 손실만 계산하며 모델의 파라미터는 업데이트 하지 않음<br/>
 `torch.no_grad()`이 블록 안에서는 그라디언트를 계산하지 않음, 이는 메모리 사용을 줄이고 계산 속도를 높임<br/>
 
+이후 최종 학습이 완료된 모델을 test_loader에 대해 평가<br/>
+이 과정에서도 검증과 마찬가지로 모델의 파라미터는 업데이트되지 않음<br/>
 
+train, valid 결과
+![image](https://github.com/user-attachments/assets/f546a24c-604d-439d-bb90-06eb15702a55)
+
+
+8) t개의 미래 데이터 예측
+```python
+def recursive_forecast(model, initial_sequence, predict_length):
+    model.eval()
+    predictions = []
+    current_seq = initial_sequence.clone().detach()
+    
+    for _ in range(predict_length):
+        with torch.no_grad():
+            pred = model(current_seq)
+            predictions.append(pred.cpu().numpy())
+            
+            current_seq = torch.cat((current_seq[:, 1:, :], pred.unsqueeze(1)), dim=1)
+    
+    return np.array(predictions)
+
+initial_sequence = torch.tensor(scaled_data[-window_size:], dtype=torch.float32).unsqueeze(0).to(device)
+predicted_30_days = recursive_forecast(model, initial_sequence, predict_length=30)
+```
+`initial_sequence = torch.tensor(scaled_data[-window_size:], dtype=torch.float32).unsqueeze(0).to(device)`로 가장 최근의 window_size 길이만큼의 데이터를 가져오는데 이 데이터는 예측의 시작점이 됨<br/>
+
+`recursive_forecast`함수를 통해 주어진 시퀀스 데이터(과거 데이터)를 기반으로 미래의 predict_length 만큼의 데이터를 순차적으로 예측<br/>
+`current_seq = torch.cat((current_seq[:, 1:, :], pred.unsqueeze(1)), dim=1)`을 통해서 현재 시퀀스에서 가장 오래된 값을 제거하고, 새로 예측한 값을 시퀀스의 끝에 추가하여 시퀀스를 업데이트 함<br/>
+이로써 다음 루프에서 이 새로운 시퀀스를 사용하여 다음 타임스텝을 예측할 수 있음<br/>
+
+train, valid, test, pred 까지 plot으로 찍어보면<br/>
+![image](https://github.com/user-attachments/assets/38f87cdd-fa11-4c63-be08-18c2dfa7284c)
+이런 결과가 나옴<br/>
 
 ---
 
-작성중 ...<br/>
+이후에는 t개의 미래 데이터 예측의 결과가 부정확한데 튜닝을 통해서 개선할 수 있는지 확인해보려고 함<br/>
 
 <br/>
