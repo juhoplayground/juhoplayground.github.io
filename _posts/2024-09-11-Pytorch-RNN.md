@@ -3,8 +3,8 @@ layout: post
 title: Pytorch로 RNN timeseries 예측
 author: 'Juho'
 date: 2024-09-11 09:00:00 +0900
-categories: [Python]
-tags: [Python, Pytorch, RNN]
+categories: [Pytorch]
+tags: [Pytorch, RNN]
 pin: True
 toc : True
 ---
