@@ -348,7 +348,7 @@ predicted_120_days = model.recursive_forecast(initial_sequence, predict_length=1
 
 
 train, test, pred 까지 plot으로 찍어보면<br/>
-![image](https://github.com/user-attachments/assets/f52c3aac-7662-48d8-b80a-6dd0f21e4706)
+![image](https://github.com/user-attachments/assets/686adb3b-849f-4a5e-b83b-64820eb91758)
 이런 결과가 나옴<br/>
 
 ---
