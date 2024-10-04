@@ -102,8 +102,8 @@ scaled_data, scaler = data_normalization(path='../data/time_series_data.csv')
 
 def objective(trial):
     seq_length = trial.suggest_int('seq_length', 1, 31)
-    batch_size = trial.suggest_categorical('batch_size', [1, 2, 4, 8, 16, 32, 64, 128, 256, 512])
-    hidden_size = trial.suggest_categorical('hidden_size', [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048])
+    batch_size = trial.suggest_categorical('batch_size', [16, 32, 64])
+    hidden_size = trial.suggest_categorical('hidden_size', [8, 16, 32])
     num_layers =  trial.suggest_int("num_layers", 1, 10)
     
     sequences = create_sequences(scaled_data, seq_length)
@@ -161,6 +161,25 @@ optuna.visualization.plot_param_importances(study)
 print(f"Best parameters: {study.best_params}")
 print(f"Best training loss: {study.best_value}")
 ```
+
+```
+seq_length = trial.suggest_int('seq_length', 1, 31)
+batch_size = trial.suggest_categorical('batch_size', [16, 32, 64])
+hidden_size = trial.suggest_categorical('hidden_size', [8, 16, 32])
+num_layers =  trial.suggest_int("num_layers", 1, 10)
+```
+해당 라인을 통해서 trial 객체를 통해 하이퍼파라미터의 값의 범위를 지정 <br/>
+이후 주어진 num_epochs 동안 모델을 학습시키고, 각 에포크에서의 손실을 계산<br/>
+trial.report(train_losses, epoch) 함수틀 이용해 현재 에포크의 손실을 보고 <br/>
+성능이 좋지 않다고 판단되면 현재 시도를 중단(prune)함 <br/>
+
+```
+optuna.visualization.plot_optimization_history(study)
+optuna.visualization.plot_param_importances(study)
+print(f"Best parameters: {study.best_params}")
+print(f"Best training loss: {study.best_value}")
+```
+코드를 통해서 최적화 과정을 시각화하고, 최종적으로 가장 좋은 하이퍼파라미터와 그때의 손실 값을 출력<br/>
 
 
 3) 슬라이딩 윈도우 생성
