@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Pytorch로 RNN timeseries 예측(4) - Hyper Parameters 튜닝
+title: Pytorch로 RNN timeseries 예측(4) - Dropout 추가
 author: 'Juho'
 date: 2024-10-04 09:00:00 +0900
 categories: [Pytorch]
