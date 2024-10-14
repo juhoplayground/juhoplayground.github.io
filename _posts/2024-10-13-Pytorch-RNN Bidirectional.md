@@ -23,7 +23,7 @@ toc : True
 
 ## 목차
 1. [Bidirectional RNN](#bidirectional-rnn)
-2. [Dropout 추가 방법](#dropout-추가-방법)
+2. [Bidirectional 추가 방법](#bidirectional-추가-방법)
 
 ## Bidirectional RNN
 Bidirectional RNN은 일반적인 RNN의 확장으로 입력 시퀀스를 순방향과 역방향 두가지 방향으로 처리하여 더 자세한 컨텍스트 정보를 활용하는 구조다.<br/>
