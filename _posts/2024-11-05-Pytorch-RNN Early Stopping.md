@@ -23,13 +23,7 @@ toc : True
 
 ## 목차
 1. [Early Stopping](#early-stopping)
-2. [Scaler 종류와 특징](#scaler-종류와-특징)
- - 1) [MinMaxScaler](#1-minmaxscaler)
- - 2) [MaxAbsScaler](#2-maxabsscaler)
- - 3) [StandardScaler](#3-standardscaler)
- - 4) [RobustScaler](#4-robustscaler)
-3. [Scaler가 모델에 미치는 영향](#scaler가-모델에-미치는-영향)
-4. [Scaler 선택 가이드](#scaler-선택-가이드)
+2. [Early Stopping 구현](#early-stopping-구현)
 
 ## Early Stopping
 학습 과정에서 과적합을 방지하기 위해 학습을 조기에 중단하는 기법을 의미<br/>
