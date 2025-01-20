@@ -38,15 +38,15 @@ toc : True
 airflow가 설치되었는지 `airflow version`으로 확인한다.<br/>
 
 #### 1) airflow 데이터베이스 초기화
-`airflow db mirgrate` 명령어를 실행한다.<br/>
+`airflow db migrate` 명령어를 실행한다.<br/>
 다른 블로그에서는 `airflow db init` 명령어를 사용하는데 버전 업데이트 되면서 init 함수는 deprecated 되었다.<br/>
 
 #### 2) airflow 관리자 계정 생성
 ```
 airflow users create \
     --username admin \
-    --firstname Juho \
-    --lastname Park \
+    --firstname name \
+    --lastname name \
     --role Admin \
     --email admin@example.com
 ```
