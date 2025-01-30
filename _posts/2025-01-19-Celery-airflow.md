@@ -31,22 +31,21 @@ toc : True
 
 ## Celery Airflow
 [Airflow Celery Executor](https://airflow.apache.org/docs/apache-airflow-providers-celery/stable/index.html){:target="_blank"}에 라이브러리 버전 요구사항을 확인해야한다.<br/>
-
-공식 문서대로 설치한다.
-그전에 AIRFLOW_HOME 환경변수를 설정한다. `export AIRFLOW_HOME=~/airflow`<br/>
-`pip install "apache-airflow[celery]==2.10.4" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.4/constraints-3.8.txt"`
+AIRFLOW_HOME 환경변수를 설정한다. `export AIRFLOW_HOME=~/airflow`<br/>
+이후 아래의 명령어를 통해서 설치한다.<br/>
+`pip install "apache-airflow[celery]==2.10.4" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.4/constraints-3.8.txt"` <br/>
 airflow가 설치되었는지 `airflow version`으로 확인한다.<br/>
 
 #### 1) airflow 데이터베이스 초기화
-`airflow db mirgrate` 명령어를 실행한다.<br/>
+`airflow db migrate` 명령어를 실행한다.<br/>
 다른 블로그에서는 `airflow db init` 명령어를 사용하는데 버전 업데이트 되면서 init 함수는 deprecated 되었다.<br/>
 
 #### 2) airflow 관리자 계정 생성
 ```
 airflow users create \
     --username admin \
-    --firstname Juho \
-    --lastname Park \
+    --firstname name \
+    --lastname name \
     --role Admin \
     --email admin@example.com
 ```
@@ -86,9 +85,10 @@ GRANT ALL PRIVILEGES ON DATABASE airflow_db TO airflow_user;
 `sql_alchemy_conn = postgresql+psycopg2://airflow_user:your_password@localhost/airflow_db`
 
 airflow 시간대를 `default_timezone = Asia/Seoul`로 변경한다.<br/>
+그 다음 example DAG을 보이지 않게 하기 위해서 `load_examples = False`로 수정한다.<br/>
 
 그리고 새 데이터베이스로 마이그레이션을 초기화한다.<br/>
-`ariflow db migrate`
+`airflow db migrate`
 
 #### 4) airflow 실행
 ```
@@ -206,7 +206,7 @@ from app.test.task import add
 
 # Celery 작업을 호출하는 래퍼 함수
 def trigger_celery_task(**kwargs):
-    a= randrange(10)
+    a = randrange(10)
     b = randrange(10)
     result = add.delay(a, b)  # Celery 작업 호출
     return result.id  # 작업 ID 반환
