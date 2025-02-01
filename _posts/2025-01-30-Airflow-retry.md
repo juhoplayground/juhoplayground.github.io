@@ -29,7 +29,7 @@ toc : True
  - 4) [DAG이 재시도하거나 실패했을때 이메일 받는 방법](#4-dag이-재시도하거나-실패했을때-이메일-받는-방법)
 
 ## Celery Airflow Retry
-airflow는 DAG을 실행하는 과정에서 실패 했을 때 재시도 설정하는 것이 
+airflow는 DAG을 실행하는 과정에서 실패 했을 때 재시도 설정하는 것은 어렵지 않다.<br/>
 #### 1) 재시도
 ```python
 default_args = {'owner' : 'me',
