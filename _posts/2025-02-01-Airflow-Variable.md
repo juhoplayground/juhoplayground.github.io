@@ -22,7 +22,7 @@ toc : True
 </style>
 
 ## 목차
-1. [Airflow Variable](#celery-airflow-retry)
+1. [Airflow Variable](#airflow-variable)
  - 1) [Variable 설정(UI)](#1-variable-설정ui)
  - 2) [Variable 설정(Code)](#2-variable-설정code)
  - 3) [Variable 사용](#3-variable-사용)
