@@ -27,7 +27,7 @@ toc : True
  - 2) [간단한 구현 테스트](#2-간단한-구현-테스트)
 
 ## Playwright?
-[Playwrigh](https://playwright.dev/python/){:target="_blank"}는 Microsoft에서 만든 웹 브라우저 테스트 및 웹 스크래핑을 위한 오픈 소스 자동화 라이브러리이다.<br/>
+[Playwright](https://playwright.dev/python/){:target="_blank"}는 Microsoft에서 만든 웹 브라우저 테스트 및 웹 스크래핑을 위한 오픈 소스 자동화 라이브러리이다.<br/>
 개발실의 다른 인원이 Selenium으로 만든 웹 크롤링하는 프로젝트에서 크롤링이 막혀서 도움을 요청했다.<br/>
 해당 인원이 여러 방법을 사용해보았지만 크롤링이 자꾸 막혀서 어떤 방법으로 해보면 좋겠는지 고민을 해달라는 내용이였다.<br/>
 <br/>
