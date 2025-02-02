@@ -22,10 +22,9 @@ toc : True
 </style>
 
 ## 목차
-1. [Playwright?](#celery-airflow-retry)
- - 1) [Variable 설정(UI)](#1-variable-설정ui)
- - 2) [Variable 설정(Code)](#2-variable-설정code)
- - 3) [Variable 사용](#3-variable-사용)
+1. [Playwright?](#playwright)
+ - 1) [설치 방법](#1-설치-방법)
+ - 2) [간단한 구현 테스트](#2-간단한-구현-테스트)
 
 ## Playwright?
 [Playwrigh](https://playwright.dev/python/){:target="_blank"}는 Microsoft에서 만든 웹 브라우저 테스트 및 웹 스크래핑을 위한 오픈 소스 자동화 라이브러리이다.<br/>
