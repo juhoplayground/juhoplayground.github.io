@@ -22,7 +22,7 @@ toc : True
 </style>
 
 ## 목차
-1. [Airflow DAG 삭제 혹은 중지](#airflow-동적으로-dag-생성)
+1. [Airflow DAG 삭제 혹은 중지](#airflow-dag-삭제-혹은-중지)
  - 1) [중지하는 방법](#1-중지하는-방법)
  - 2) [삭제하는 방법](#2-삭제하는-방법)
 
