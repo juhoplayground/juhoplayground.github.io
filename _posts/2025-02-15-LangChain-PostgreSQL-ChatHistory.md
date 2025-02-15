@@ -2,7 +2,7 @@
 layout: post
 title: Langchain PostgreSQL Chat History 기록하기
 author: 'Juho'
-date: 2025-02-13 09:00:00 +0900
+date: 2025-02-15 09:00:00 +0900
 categories: [LangChain]
 tags: [LangChain, PostgreSQL, Python]
 pin: True
@@ -91,4 +91,4 @@ async def chat_message(session_id:UUID, query:str):
 생성된 테이블에서 결과를 확인해볼 수 있다.<br/>
 
 
---
+---
