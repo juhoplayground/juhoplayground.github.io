@@ -2,7 +2,7 @@
 layout: post
 title: Langchain PDF Chatbot 만들기 - 1 -  DataLoader
 author: 'Juho'
-date: 2025-02-13 09:00:00 +0900
+date: 2025-02-18 09:00:00 +0900
 categories: [LangChain]
 tags: [LangChain, PDF, Chatbot, Python]
 pin: True
