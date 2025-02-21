@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Langchain PDF Chatbot 만들기 - 3 - VectorStore(FAISS)
+title: Langchain PDF Chatbot 만들기 - 4 - VectorStore(FAISS)
 author: 'Juho'
 date: 2025-02-20 09:00:00 +0900
 categories: [LangChain]
