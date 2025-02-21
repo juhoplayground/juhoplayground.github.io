@@ -199,7 +199,7 @@ vector_store.max_marginal_relevance_search("검색할 내용", filter={"source":
 - similarity : 유사도 기반 검색 (기본값)<br/>
 
 ```python
-retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 4, "fetch_k" : 20})
+retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 4})
 ```
 
 - mmr : Maximal Marginal Relevance 검색<br/>
@@ -211,7 +211,7 @@ retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 4, 
 - similarity_score_threshold : 임계값 기반 유사도 검색<br/>
 
 ```python
-retriever = vector_store.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 4, "score_threshold": 0.5, "fetch_k" : 20})
+retriever = vector_store.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 4, "score_threshold": 0.5})
 ```
 
 <br/>
