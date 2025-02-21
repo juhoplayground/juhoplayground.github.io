@@ -164,8 +164,9 @@ vector_store.save_local(folder_path=FAISS_PATH, index_name=FAISS_INDEX_NAME)
 - 호출 <br/>
 
 ```python
-vector_store = FAISS.load_local(folder_path=FAISS_PATH, index_name=FAISS_INDEX_NAME, embeddings=cached_embedding, allow_dangerous_deserialization=True)
+vector_store = FAISS.load_local(folder_path=FAISS_PATH, index_name=FAISS_INDEX_NAME, embeddings=cached_embedding, allow_dangerous_deserialization=True, distance_strategy=DistanceStrategy.COSINE)
 ```
+load_local 할 때 distance_strategy를 생략하면 생성할 때 COSINE으로 만들었어도 EUCLIDEAN으로 호출이 되었다. <br/>
 
 #### 4) FAISS 병합
 ```python
