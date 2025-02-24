@@ -26,9 +26,6 @@ toc : True
  - 1) [Sparse Retriever](#1-sparse-retriever)
  - 2) [Dense Retriever](#2-dense-retriever)
 2. [Vector Store Retriver](#vector-store-retriver)
- - 1) [VectorStore 종류](#1-vectorstore-종류)
- - 2) [VectorStore 선택 과정](#2-vectorstore-선택-과정)
- - 3) [VectorStore Indexing](#3-vectorstore-indexing)
 
 ## Retriever
 Retriever는 벡터 저장소에서 사용자가 입력한 질문을 벡터화 → 유사도 검색 → 상위 문서 선정 → 문서 반환하여 문서를 검색하는 과정을 의미합니다.<br/>
