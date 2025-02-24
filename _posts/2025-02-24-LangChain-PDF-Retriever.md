@@ -30,8 +30,6 @@ toc : True
 ## Retriever
 Retriever는 벡터 저장소에서 사용자가 입력한 질문을 벡터화 → 유사도 검색 → 상위 문서 선정 → 문서 반환하여 문서를 검색하는 과정을 의미합니다.<br/>
 간단한 의미 검색에서 부터 성능 향상을 위해 고려할 수 있는 다양한 기법까지 순차적으로 확인해보도록 하겠습니다. <br/>
-VectorStore는 임베딩 벡터들을 효율적으로 저장하고 관련 문서를 신속하게 검색할 수 있는 데이터베이스를 의미합니다.<br/>
-그렇기 때문에 응답 시간과 정확성에 큰 영향을 미칩니다. <br/>
 
 #### 1) Sparse Retriever
 Sparse Retriever는 데이터와 사용자의 질문을 BM25기법을 이용해서 키워드 벡터로 변환하여 처리합니다.<br/>
@@ -40,7 +38,7 @@ BM25는 특정 키워드의 존재 여부만 고려하기 때문에 계산 비�
 #### 2) Dense Retriever
 Dense Retriever는 데이터와 사용자의 질문을 임베딩 모델을 이용해서 고차원의 벡터값으로 변환하여 처리합니다.<br/>
 키워드가 일치하지 않더라도 의미적으로 관련성이 가장 높은 문서를 제공하기 때문에 상대적으로 검색 결과의 품질이 좋을 수 있습니다.<br/>
-
+<br/>
 두가지 방법의 장단점을 고려하여 목적과 요구사항에 맞게 선택하여 사용하면 됩니다.<br/>
 
 ## Vector Store Retriver
@@ -73,7 +71,7 @@ invoke 메소드 외에도 다른 메소드를 이용해서 chain을 실행할 �
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- stream(동기 스트리밍, 토큰 단위로 순차적 반환) <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- astream (비동기 스트리밍, async iterator를 통한 순차적 반환) <br/>
 
-stream을 사용하기 위해서는 한가지 설정을 추가로 해야합니다.<br/>
+stream을 사용하기 위해서는 streaming=True을 추가 해야합니다.<br/>
 ```
 llm = ChatOpenAI(model=OPENAI_API_MODEL, temperature=0, openai_api_key=OPENAI_API_KEY, streaming=True)
 ```
