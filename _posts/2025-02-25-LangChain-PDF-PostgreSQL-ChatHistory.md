@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Langchain PostgreSQL Chat History 기록하기
+title: Langchain PDF Chatbot 만들기 - 7 - PostgreSQL Chat Message History
 author: 'Juho'
-date: 2025-02-15 09:00:00 +0900
+date: 2025-02-25 09:02:00 +0900
 categories: [LangChain]
-tags: [LangChain, PostgreSQL, Python]
+tags: [LangChain, PDF, Chatbot, PostgreSQL, Python]
 pin: True
 toc : True
 ---
@@ -60,7 +60,10 @@ async def connect_database(session_id: str, user_id: str) -> PostgresChatMessage
 
 async def chat_message(session_id:UUID, query:str):
     embedding = OpenAIEmbeddings(model=OPENAI_API_EMBEDDING, openai_api_key=OPENAI_API_KEY)
-    vector_store = FAISS.load_local("faiss_index", embedding, allow_dangerous_deserialization=True)
+    cached_embedding = CacheBackedEmbeddings.from_bytes_store(underlying_embeddings=embedding,
+                                                          document_embedding_cache=LocalFileStore(EMBEDDING_CACHE_FOLDER),
+                                                          namespace=embedding.model)
+    vector_store = FAISS.load_local("faiss_index", cached_embedding, allow_dangerous_deserialization=True)
     retriever = vector_store.as_retriever()
 
     prompt = ""
