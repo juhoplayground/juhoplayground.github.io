@@ -122,3 +122,6 @@ app = FastAPI(
 <br/>
 
 --- 
+
+llm을 `streaming=True` 설정할 경우 캐시가 안되었다.<br/>
+cache를 적용하고 싶다면 streaming을 False로 해야할 것 같다. (기본 값은 False다.)<br/>
