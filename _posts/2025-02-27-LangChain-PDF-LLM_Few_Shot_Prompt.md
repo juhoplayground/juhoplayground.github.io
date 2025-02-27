@@ -2,7 +2,7 @@
 layout: post
 title: Langchain PDF Chatbot 만들기 - 12 - Few Shot Pormpt
 author: 'Juho'
-date: 2025-02-26 09:02:00 +0900
+date: 2025-02-27 09:02:00 +0900
 categories: [LangChain]
 tags: [LangChain, PDF, Chatbot, Prompt, OpenAI, Python]
 pin: True
