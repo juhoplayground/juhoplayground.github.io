@@ -71,10 +71,8 @@ contexts = []
 for query in test_questions:
     result = await retriever.invoke(query)
     contexts.append([doc.page_content for doc in result])
-            
-answers = []
-for q in test_questions:
-    result = chat_responses(query=query):
+
+    result = chat_responses(query=query)
     answers.append(result)
 
 dataset = Dataset.from_dict({"question": test_questions,
