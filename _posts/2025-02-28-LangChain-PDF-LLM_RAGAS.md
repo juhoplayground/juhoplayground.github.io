@@ -54,10 +54,11 @@ End-To-End 파이프라인의 성능을 평가하는 것도 사용자 경험에 
 Ragas는 파이프라인의 전반적인 성능을 평가하는 데 사용할 수 있는 메트릭을 제공하여 종합적인 평가를 보장합니다.<br/>
 <br/>
 Answer semantic similarity<br/>
-생성된 답변이 실제로 올바른지를 측정하는 지표이다.<br/>
+생성된 답변과 기대되는 정답간의 의미적 유사도를 측정하는 지표이다.<br/>
+
 <br/>
 Answer correctness<br/>
-생성된 답변과 기대되는 정답간의 의미적 유사도를 측정하는 지표이다.<br/>
+생성된 답변이 실제로 올바른지를 측정하는 지표이다.<br/>
 
 ## RAGAS Code
 `pip install -U  ragas datasets`로 필요한 라이브러리를 설치합니다.<br/>
