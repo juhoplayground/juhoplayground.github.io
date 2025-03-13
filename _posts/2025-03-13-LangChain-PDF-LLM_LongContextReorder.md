@@ -23,7 +23,8 @@ toc : True
 
 ## 목차
 1. [LongContextReorder란?](#longcontextreorder란)
-2. [LongContextReorder Code](#longcontextreorder-code)
+2. [LongContextReorder 문서 정렬 알고리즘](#longcontextreorder-문서-정렬-알고리즘)
+3. [LongContextReorder Code](#longcontextreorder-code)
 
 ## LongContextReorder란?
 모델의 아키텍처와 관계없이 10개 이상의 검색된 문서를 포함할 경우 성능이 상당히 저하됩니다 <br/>
