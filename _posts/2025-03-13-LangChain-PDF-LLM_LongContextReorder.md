@@ -32,7 +32,7 @@ toc : True
 관련 논문 : [https://arxiv.org/abs/2307.03172](https://arxiv.org/abs/2307.03172){:target="_blank"} <br/>
 이 문제를 피하기 위해서 검색 후 문서의 순서를 재배열하여 성능 저하를 방지할 수 있습니다.<br/>
 
-## LongContextReorder 문서 정렬 알고리즘 <br/>
+## LongContextReorder 문서 정렬 알고리즘
 1) 먼저 입력 받은 문서 리스트를 reverse() 함수를 사용해 뒤집습니다. <br>
 2) 뒤집힌 리스트를 순회하면서 인덱스에 따라 문서의 위치를 결정합니다. <br/>
 - 인덱스가 짝수인 경우 : 해당 문서를 결과 리스트의 맨 앞에 삽입 <br/>
