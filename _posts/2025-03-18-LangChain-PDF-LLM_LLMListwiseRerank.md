@@ -23,8 +23,8 @@ toc : True
 
 ## 목차
 1. [LLMListwiseRerank란?](#llmlistwisererank란)
-2. [LLMListwiseRerank 사용 목적](#llmchainfilter-사용-목적)
-3. [LLMListwiseRerank 장,단점](#llmchainfilter-장단점)
+2. [LLMListwiseRerank 사용 목적](#llmlistwisererank-사용-목적)
+3. [LLMListwiseRerank 장,단점](#llmlistwisererank-장단점)
 4. [LLMListwiseRerank + LLMChainFilter](#llmlistwisererank--llmchainfilter)
 5. [LLMListwiseRerank Code](#llmlistwisererank-code)
 
