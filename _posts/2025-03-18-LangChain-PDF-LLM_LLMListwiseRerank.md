@@ -26,7 +26,7 @@ toc : True
 2. [LLMListwiseRerank 사용 목적](#llmchainfilter-사용-목적)
 3. [LLMListwiseRerank 장,단점](#llmchainfilter-장단점)
 4. [LLMListwiseRerank + LLMChainFilter](#llmlistwisererank--llmchainfilter)
-5. [LLMListwiseRerank Code](#llmchainfilter-code)
+5. [LLMListwiseRerank Code](#llmlistwisererank-code)
 
 ## LLMListwiseRerank란?
 [Zero-Shot Listwise Document Reranking](https://arxiv.org/pdf/2305.02156){:target="_blank"}을 인용한 Document compressor입니다.<br/>
