@@ -23,11 +23,8 @@ toc : True
 
 ## 목차
 1. [GraphQL과 관계형 데이터베이스의 조합이 중요한 이유](#graphql과-관계형-데이터베이스의-조합이-중요한-이유)
-2. [GraphQL 스키마 객체 타입](#graphql-스키마-객체-타입)
-3. [Query](#query)
-4. [Mutation](#mutation)
-5. [Subscription](#subscription)
-6. [실행](#실행)
+2. [GrpahQL + ORM 예시](#grpahql--orm-예시)
+
 
 ## GraphQL과 관계형 데이터베이스의 조합이 중요한 이유
 1) 데이터 요청 효율성 향상<br/>
@@ -45,7 +42,7 @@ toc : True
 - 관계형 데이터베이스의 트랜잭션 기능은 GraphQL 뮤테이션에서 여러 데이터 변경 작업의 원자성을 보장하는 데 필수적입니다.<br/>
 
 
-## GrpahQL + ORM 예시 <br/>
+## GrpahQL + ORM 예시
 1) Database 연결
 ```python
 from app.config.database_config import POSTGRESQL_USER, POSTGRESQL_PASSWORD, POSTGRESQL_HOST, POSTGRESQL_PORT, POSTGRESQL_DB
