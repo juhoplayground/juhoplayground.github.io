@@ -250,4 +250,4 @@ class Mutation:
 --- 
 
 <br/>
-다음글에는 PostgreSQL ORM과 GrpahQL을 연동해보겠습니다.<br/>
+다음글에는 DataLoader 관련해서 작성하도록 하겠습니다.<br/>
