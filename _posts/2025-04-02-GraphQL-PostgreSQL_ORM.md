@@ -247,4 +247,4 @@ class Mutation:
 --- 
 
 <br/>
-다음글에는 DataLoader 관련해서 작성하도록 하겠습니다.<br/>
+다음글에는 만들어진 GraphQL 서버에 Query 하는 방법에 대해서 자세히 설명하겠습니다.<br/>
