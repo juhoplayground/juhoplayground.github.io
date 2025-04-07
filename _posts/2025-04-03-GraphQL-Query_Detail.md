@@ -4,7 +4,7 @@ title: GraphQL - Query(Arguments, Aliases, Variables, Fragments, Directives)
 author: 'Juho'
 date: 2025-04-03 09:00:00 +0900
 categories: [GraphQL]
-tags: [GraphQL, FastAPI, strawberry, PostgreSQL, ORM, Python]
+tags: [GraphQL, FastAPI, strawberry, Python]
 pin: True
 toc : True
 ---
