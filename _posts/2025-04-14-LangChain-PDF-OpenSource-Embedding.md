@@ -26,7 +26,7 @@ toc : True
 2. [MTEB](#mteb)
  - [MTEB로 측정가능한 Task 목록](#mteb로-측정가능한-task-목록)
  - [MTEB 테스트 코드](#mteb-테스트-코드)
-3. [테스트한 OpenSource Embedding 모델 List](#ragchecker-주요-metric-설명)
+3. [테스트한 OpenSource Embedding 모델 List](#테스트한-opensource-embedding-모델-list)
 
 ## 기존 사용 Embedding 모델
 [OpenAI가 제공하는 임베딩 모델](https://platform.openai.com/docs/guides/embeddings){:target="_blank"}과  [Anthropic이 권장하는 임베딩 모델](https://docs.anthropic.com/ko/docs/build-with-claude/embeddings){:target="_blank"} 중에서 text-embedding-3-large를 사용하고 있었다.  
