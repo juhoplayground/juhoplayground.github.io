@@ -2,9 +2,9 @@
 layout: post
 title: Langchain PDF Chatbot 만들기 - 22 - OpenSouce Embedding 모델 찾기
 author: 'Juho'
-date: 2025-04-14 09:00:00 +0900
+date: 2025-04-14 09:01:00 +0900
 categories: [LangChain]
-tags: [LangChain, PDF, Chatbot, RAGChecker, Python]
+tags: [LangChain, PDF, Chatbot, MTEB, Embedding ,Python]
 pin: True
 toc : True
 ---
