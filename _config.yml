@@ -23,6 +23,8 @@ description: "개발자의 일상을 담은 Git Blog"
 # Fill in the protocol & hostname for your site.
 # e.g. 'https://username.github.io', note that it does not end with a '/'.
 url: "https://juhoplayground.github.io"
+plugins:
+  - jekyll-sitemap
 
 github:
   username: juhoplayground # change to your github username
