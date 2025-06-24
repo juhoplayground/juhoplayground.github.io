@@ -1,4 +1,4 @@
- [---
+---
 layout: post
 title: LangSmith tracer 에러 및 해결 방법
 author: 'Juho'
