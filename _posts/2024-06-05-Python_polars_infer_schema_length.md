@@ -4,7 +4,7 @@ title: Python - Polars infer_schema_length 오류
 author: 'Juho'
 date: 2024-06-04 09:00:00 +0900
 categories: [Polars]
-tags: [Polars, python]
+tags: [Polars, Python]
 pin: True
 toc : True
 ---
