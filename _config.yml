@@ -29,7 +29,6 @@ plugins:
   - jekyll-feed
   - jekyll-archives
   - jekyll-paginate-v2
-  - jekyll-minifier
   - jekyll-redirect-from
   - jekyll-optional-front-matter
   - jekyll-titles-from-headings
