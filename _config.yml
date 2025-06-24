@@ -25,6 +25,14 @@ description: "개발자의 일상을 담은 Git Blog"
 url: "https://juhoplayground.github.io"
 plugins:
   - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-feed
+  - jekyll-archives
+  - jekyll-paginate-v2
+  - jekyll-minifier
+  - jekyll-redirect-from
+  - jekyll-optional-front-matter
+  - jekyll-titles-from-headings
 
 github:
   username: juhoplayground # change to your github username
@@ -114,7 +122,7 @@ assets:
 pwa:
   enabled: true # the option for PWA feature
 
-paginate: 10
+# paginate: 10
 
 # The base URL of your site
 baseurl: ""
@@ -197,3 +205,21 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+
+paginate_path: "/page/:num/"
+pagination:
+  enabled: true
+  per_page: 8
+  permalink: '/page/:num/'
+  title: ':title - page :num'
+  limit: 0
+  sort_field: 'date'
+  sort_reverse: true
+  category: 'posts'
+  tag: ''
+  locale: ''
+  autogen_root: false
+  trail: 
+    before: 2
+    after: 2
+  indexpage: 'index'

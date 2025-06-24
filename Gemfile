@@ -4,6 +4,23 @@ source "https://rubygems.org"
 
 gemspec
 
+gem "jekyll"
+gem "jekyll-sitemap"
+gem "jekyll-seo-tag"
+gem "jekyll-feed"
+gem "jekyll-archives"
+gem "jekyll-paginate-v2"
+gem "jekyll-minifier"
+gem "jekyll-redirect-from"
+gem "jekyll-optional-front-matter"
+gem "jekyll-titles-from-headings"
+
+# 개발 도구
+gem "jekyll-admin"
+gem "rake"
+
+gem "webrick", "~> 1.7" 
+
 group :test do
   gem "html-proofer", "~> 4.4"
 end
@@ -21,6 +38,3 @@ gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 # Lock `http_parser.rb` gem to `v0.6.x` on JRuby builds since newer versions of the gem
 # do not have a Java counterpart.
 gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
-
-gem 'jekyll-sitemap'
-gem 'rake'
