@@ -222,3 +222,7 @@ pagination:
     before: 2
     after: 2
   indexpage: 'index'
+
+feed:
+  posts_limit: 20
+  excerpt_only: false
