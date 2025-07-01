@@ -22,7 +22,7 @@ toc : True
 </style>
 
 ## 목차
-1. [celery.logs에 sync가 반복되는 현상 확인](#celerylogs에-sync가-반복되는-현상-확인)
+1. [mingle: sync이 반복됨](#mingle-sync이-반복됨)
 2. [heartbeat 문제인가?](#heartbeat-문제인가)
 3. [진짜 문제는...](#진짜-문제는)
 
