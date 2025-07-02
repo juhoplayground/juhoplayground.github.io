@@ -28,7 +28,7 @@ toc : True
 4. [프로그래머로 살아가기 위해서](#프로그래머로-살아가기-위해서)
 
 ## 바이브 코딩?
-2025년 2월 안드레이 카파시(Andrej Karpathy)가 X에 vibe coding”이라고 하며 [포스팅](https://x.com/karpathy/status/1886192184808149383)을 함
+2025년 2월 안드레이 카파시(Andrej Karpathy)가 X에 vibe coding”이라고 하며 [포스팅](https://x.com/karpathy/status/1886192184808149383){:target="_blank"}을 함
 2025년 3월에는 Merriam-Webster 사전에 “slang & trending” 용어로 등재되며 공식화  
 2025년 5월에는 [스타트업 25%가 코드베이스의 95% 이상을 AI로 작성](https://techcrunch.com/2025/03/06/a-quarter-of-startups-in-ycs-current-cohort-have-codebases-that-are-almost-entirely-ai-generated/){:target="_blank"}했다는 기사도 있다.  
 
