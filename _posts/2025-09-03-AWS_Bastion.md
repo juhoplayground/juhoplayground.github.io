@@ -22,9 +22,10 @@ toc : True
 </style>
 
 ## 목차
-1. [AWS Bastion을 공부하게 된 이유](#blue-ocean)  
-2. [Pipeline: Stage View](#pipeline-stage-view)
-3. [Pipeline Graph View](#pipeline-graph-view)
+1. [AWS Bastion을 공부하게 된 이유](#aws-bastion을-공부하게-된-이유)  
+2. [AWS Bastion이란?](#aws-bastion이란)
+3. [AWS Bastion 주요 목적과 기능, 장점](#aws-bastion-주요-목적과-기능-장점)
+4. [AWS Bastion 아키텍처](#aws-bastion-아키텍처)
 
 
 
