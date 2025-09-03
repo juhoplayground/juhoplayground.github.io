@@ -26,8 +26,15 @@ toc : True
 2. [AWS Bastion이란?](#aws-bastion이란)
 3. [AWS Bastion 주요 목적과 기능, 장점](#aws-bastion-주요-목적과-기능-장점)
 4. [AWS Bastion 아키텍처](#aws-bastion-아키텍처)
-
-
+5. [AWS Batrion 보안 그룹 및 접근 제어 예시](#aws-batrion-보안-그룹-및-접근-제어-예시)
+6. [AWS Batrion  EC2 구축 체크리스트](#aws-batrion--ec2-구축-체크리스트)
+7. [AWS Bastion 대안](#aws-bastion-대안)
+8. [SSM Session Manager 빠른 시작](#ssm-session-manager-빠른-시작)
+9. [EC2 Instance Connect Endpoint(EICE) 빠른 시작](#ec2-instance-connect-endpointeice-빠른-시작)
+10. [마이그레이션 경로(바스티온 → SSM/EICE)](#마이그레이션-경로바스티온--ssmeice)
+11. [모니터링·감사·로깅](#모니터링감사로깅)
+12. [운영 베스트 프랙티스](#운영-베스트-프랙티스)
+13. [자동화 아이디어](#자동화-아이디어)
 
 ## AWS Bastion을 공부하게 된 이유
 새로 이직한 회사에서 AWS Bastion을 사용하고 있었다.  
@@ -86,7 +93,7 @@ App/DB SG (inbound)
   
 2) 보안 설정  
  [ ] SSM 에이전트 설치/활성화  
- [] VPC 엔드포인트 구성 (com.amazonaws.*.ssm, ec2messages, ssm)  
+ [ ] VPC 엔드포인트 구성 (com.amazonaws.*.ssm, ec2messages, ssm)  
  [ ] CloudWatch Logs로 접속 로그 수집  
  [ ] IAM 역할 최소권한 설정  
  [ ] 포트 22는 회사 고정 IP만 허용  
