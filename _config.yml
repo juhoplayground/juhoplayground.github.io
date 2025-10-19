@@ -32,6 +32,7 @@ plugins:
   - jekyll-redirect-from
   - jekyll-optional-front-matter
   - jekyll-titles-from-headings
+  - jekyll-last-modified-at
 
 github:
   username: juhoplayground # change to your github username

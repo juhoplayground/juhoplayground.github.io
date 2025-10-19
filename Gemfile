@@ -13,6 +13,7 @@ gem "jekyll-paginate-v2"
 gem "jekyll-redirect-from"
 gem "jekyll-optional-front-matter"
 gem "jekyll-titles-from-headings"
+gem "jekyll-last-modified-at"
 
 # 개발 도구
 gem "jekyll-admin"
