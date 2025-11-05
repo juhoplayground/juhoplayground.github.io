@@ -226,5 +226,6 @@ pagination:
   indexpage: 'index'
 
 feed:
+  path: feed.xml
   posts_limit: 20
   excerpt_only: false
