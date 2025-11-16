@@ -11,9 +11,12 @@ layout: null
     <priority>1.0</priority>
   </url>
 
-  <!-- 페이지들 (about, categories, tags, archives 등) -->
+  <!-- 페이지들 (about, archives 등) -->
   {% for page in site.pages %}
     {% if page.url contains '.xml' or page.url contains 'assets' or page.url contains '.json' %}
+      {% continue %}
+    {% endif %}
+    {% if page.url contains '/tags/' or page.url contains '/categories/' %}
       {% continue %}
     {% endif %}
     <url>
