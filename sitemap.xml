@@ -19,8 +19,12 @@ layout: null
     {% if page.url contains '/tags/' or page.url contains '/categories/' %}
       {% continue %}
     {% endif %}
+    {% assign clean_url = page.url | remove: 'index.html' %}
+    {% if clean_url == '/' %}
+      {% continue %}
+    {% endif %}
     <url>
-      <loc>{{ site.url }}{{ site.baseurl }}{{ page.url | remove: 'index.html' }}</loc>
+      <loc>{{ site.url }}{{ site.baseurl }}{{ clean_url }}</loc>
       {% if page.lastmod %}
         <lastmod>{{ page.lastmod | date_to_xmlschema }}</lastmod>
       {% endif %}
