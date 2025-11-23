@@ -16,7 +16,13 @@ layout: null
     {% if page.url contains '.xml' or page.url contains 'assets' or page.url contains '.json' %}
       {% continue %}
     {% endif %}
+    {% if page.url contains '.js' or page.url contains '.txt' or page.url contains '.html' %}
+      {% continue %}
+    {% endif %}
     {% if page.url contains '/tags/' or page.url contains '/categories/' %}
+      {% continue %}
+    {% endif %}
+    {% if page.url contains 'norobots' %}
       {% continue %}
     {% endif %}
     {% assign clean_url = page.url | remove: 'index.html' %}
