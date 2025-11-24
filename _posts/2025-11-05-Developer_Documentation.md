@@ -4,7 +4,7 @@ title: 결과만 기록하는 팀, 과정까지 남기는 팀
 author: 'Juho'
 date: 2025-11-05 09:00:00 +0900
 categories: [Dev]
-tags: [Dev, 개발 문서화, 지식 자산화]
+tags: [Dev, Team, Management, Knowledge, Documentation]
 pin: True
 toc : True
 ---
