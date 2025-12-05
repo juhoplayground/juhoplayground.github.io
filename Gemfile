@@ -19,7 +19,7 @@ gem "jekyll-last-modified-at"
 gem "jekyll-admin"
 gem "rake"
 
-gem "webrick", "~> 1.7" 
+gem "webrick", "~> 1.9" 
 
 group :test do
   gem "html-proofer", "~> 4.4"
