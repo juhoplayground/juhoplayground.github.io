@@ -3,7 +3,7 @@ layout: post
 title: Github blog 만들기 - 1 - Repository 만들기
 author: 'Juho'
 date: 2024-01-19 16:12:00 +0900
-categories: [GitHub blog, GitHub, Git]
+categories: [GitHub blog]
 tags: [GitHub blog, GitHub, Git]
 pin: True
 toc : True

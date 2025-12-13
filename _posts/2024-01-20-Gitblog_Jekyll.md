@@ -3,7 +3,7 @@ layout: post
 title: Github blog 만들기 - 2 - Jekyll 테마 적용하기
 author: 'Juho'
 date: 2024-01-20 16:30:00 +0900
-categories: [GitHub blog, GitHub, Git]
+categories: [GitHub blog]
 tags: [GitHub blog, GitHub, Git]
 pin: True
 toc : True

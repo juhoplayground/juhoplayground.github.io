@@ -3,7 +3,7 @@ layout: post
 title: Github blog 만들기 - 5 - GitHub Blog 댓글 설정하기
 author: 'Juho'
 date: 2024-01-24 19:00:00 +0900
-categories: [GitHub blog, GitHub, Git]
+categories: [GitHub blog]
 tags: [GitHub blog, GitHub, Git]
 pin: True
 toc : True

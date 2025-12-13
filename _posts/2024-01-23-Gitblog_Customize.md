@@ -3,7 +3,7 @@ layout: post
 title: Github blog 만들기 - 4 - GitHub Blog 커스터마이징
 author: 'Juho'
 date: 2024-01-23 09:00:00 +0900
-categories: [GitHub blog, GitHub, Git]
+categories: [GitHub blog]
 tags: [GitHub blog, GitHub, Git]
 pin: True
 toc : True

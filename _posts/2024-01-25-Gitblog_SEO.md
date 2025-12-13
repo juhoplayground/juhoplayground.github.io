@@ -3,7 +3,7 @@ layout: post
 title: Github blog 만들기 - 6 - GitHub Blog 검색엔진에 등록하기
 author: 'Juho'
 date: 2024-01-25 11:30:00 +0900
-categories: [GitHub blog, GitHub, Git]
+categories: [GitHub blog]
 tags: [GitHub blog, GitHub, Git]
 pin: True
 toc : True
