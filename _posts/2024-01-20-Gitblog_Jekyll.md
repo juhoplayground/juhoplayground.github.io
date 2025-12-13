@@ -96,7 +96,7 @@ bundle exec jekyll serve
 에러 없이 정상적으로 모두 실행되었다면 cmd의 하단에 아래와 같이 표기됩니다.
 ![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/2cdcc8d1-122b-479f-93db-73ea91c532ed) <br/>
 
-브라우저 주소창에 [http://127.0.0.1:4000/](http://127.0.0.1:4000/) 또는 [ http://localhost:4000/]( http://localhost:4000/)를 입력하여 접속해봅니다.
+브라우저 주소창에 http://127.0.0.1:4000 또는 http://localhost:4000 를 입력하여 접속해봅니다.
 
 그럼 다음과 같이 Jeykll 테마가 적용된 화면을 볼 수 있습니다.
 ![image](https://github.com/juhoplayground/juhoplayground.github.io/assets/156918118/5ef8e628-ce83-4bac-830d-0055c92135d0)
