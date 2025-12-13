@@ -27,7 +27,7 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
   - jekyll-feed
-  - jekyll-archives
+  # - jekyll-archives
   - jekyll-paginate-v2
   - jekyll-redirect-from
   - jekyll-optional-front-matter
@@ -198,15 +198,15 @@ exclude:
   - rollup.config.js
   - package*.json
 
-jekyll-archives:
+# jekyll-archives:
   # enabled: [categories, tags]
-  enabled: [tags]
-  layouts:
+  # enabled: [tags]
+  # layouts:
     # category: category
-    tag: tag
-  permalinks:
+  #   tag: tag
+  # permalinks:
     # category: /categories/:name/
-    tag: /tags/:name/
+    # tag: /tags/:name/
 
 paginate_path: "/page/:num/"
 pagination:
