@@ -199,12 +199,13 @@ exclude:
   - package*.json
 
 jekyll-archives:
-  enabled: [categories, tags]
+  # enabled: [categories, tags]
+  enabled: [tags]
   layouts:
-    category: category
+    # category: category
     tag: tag
   permalinks:
-    category: /categories/:name/
+    # category: /categories/:name/
     tag: /tags/:name/
 
 paginate_path: "/page/:num/"
