@@ -22,7 +22,7 @@ gem "rake"
 gem "webrick", "~> 1.9" 
 
 group :test do
-  gem "html-proofer", "~> 5.0"
+  gem "html-proofer", "~> 4.4"
 end
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
