@@ -1,7 +1,7 @@
 ---
 # the default layout is 'page'
 title: "About This Blog"
-permalink: /about/
+permalink: /about
 layout: page
 icon: fas fa-info-circle
 order: 4
