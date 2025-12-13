@@ -2,7 +2,7 @@
 layout: page
 icon: fas fa-stream
 order: 1
-permalink: /categories
+permalink: /categories/
 ---
 
 {% assign sorted_categories = site.categories | sort %}
