@@ -5,7 +5,7 @@ author: 'Juho'
 date: 2025-12-13 00:00:00 +0900
 categories: [NVIDIA]
 tags: [NVIDIA, Docker, GPU, Container, Driver]
-pin: false
+pin: True
 toc: true
 ---
 

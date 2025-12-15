@@ -5,7 +5,7 @@ author: 'Juho'
 date: 2025-12-07 00:00:00 +0900
 categories: [Lighthouse]
 tags: [Lighthouse, SEO, Performance, Web Optimization]
-pin: False
+pin: True
 toc: True
 ---
 

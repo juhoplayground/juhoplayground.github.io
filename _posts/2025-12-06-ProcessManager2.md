@@ -5,7 +5,7 @@ author: 'Juho'
 date: 2025-12-06 00:00:00 +0900
 categories: [DevOps]
 tags: [PM2, Python, Process Manager, Node.js]
-pin: False
+pin: True
 toc: True
 ---
 
