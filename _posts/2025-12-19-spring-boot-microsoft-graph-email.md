@@ -5,6 +5,7 @@ author: 'Juho'
 date: 2025-12-19 09:00:00 +0900
 categories: [SpringBoot]
 tags: [SpringBoot, Microsoft Graph API, Azure, email, Java, API]
+pin: True
 toc: True
 ---
 

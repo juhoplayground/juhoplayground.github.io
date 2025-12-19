@@ -5,8 +5,8 @@ author: 'Juho'
 date: 2025-12-15 00:00:00 +0900
 categories: [HuggingFace]
 tags: [HuggingFace, Claude Code, Fine-tuning, LLM, SFT, DPO, GRPO, LoRA]
-pin: false
-toc: true
+pin: True
+toc: True
 ---
 
 ## 목차
