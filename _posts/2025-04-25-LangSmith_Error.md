@@ -4,7 +4,7 @@ title: LangSmith tracer 에러 및 해결 방법
 author: 'Juho'
 date: 2025-04-25 09:00:00 +0900
 categories: [LangSmith]
-tags: [LangSmith, Langgraph, LangChain, Agent, Chatbot, Python]
+tags: [LangSmith, LangGraph, LangChain, Agent, Chatbot, Python]
 pin: True
 toc : True
 ---
