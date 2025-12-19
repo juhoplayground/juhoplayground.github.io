@@ -87,18 +87,18 @@ agent.invoke({
 - 10가지 파일 작업 도구 제공 (ls, read_file, write_file, edit_file, glob, grep 등)
 
 3. 서브 에이전트 위임
-```python
-# 전문화된 서브 에이전트 생성
-research_subagent = {
-    "name": "research-agent",
-    "description": "깊이 있는 질문 조사용",
-    "prompt": "전문 연구원입니다",
-    "tools": [internet_search],
-    "model": "openai:gpt-4o"
-}
+   ```python
+   # 전문화된 서브 에이전트 생성
+   research_subagent = {
+       "name": "research-agent",
+       "description": "깊이 있는 질문 조사용",
+       "prompt": "전문 연구원입니다",
+       "tools": [internet_search],
+       "model": "openai:gpt-4o"
+   }
 
-agent = create_deep_agent(subagents=[research_subagent])
-```
+   agent = create_deep_agent(subagents=[research_subagent])
+   ```
 
 4. 자동 컨텍스트 관리
 - 170K 토큰 초과 시 자동 요약
