@@ -3,8 +3,8 @@ layout: post
 title: Spring Boot에서 Microsoft Graph API로 이메일 보내기
 author: 'Juho'
 date: 2025-12-19 09:00:00 +0900
-categories: [SPRING BOOT]
-tags: [SPRING BOOT, MICROSOFT GRAPH API, AZURE, EMAIL, JAVA, API]
+categories: [SpringBoot]
+tags: [SpringBoot, Microsoft Graph API, Azure, email, JAVA, API]
 toc: True
 ---
 
