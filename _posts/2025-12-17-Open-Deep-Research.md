@@ -4,7 +4,7 @@ title: LangChain Open Deep Research - AI 기반 심층 연구 자동화 도구
 author: 'Juho'
 date: 2025-12-17 09:00:00 +0900
 categories: [LangChain, AI, Research]
-tags: [LangChain, LangGraph, Deep Research, OpenAI, Anthropic, Tavily, MCP, Supabase]
+tags: [LangChain, LangGraph, deep-research, OpenAI, Anthropic, Tavily, MCP, Supabase]
 pin: True
 toc: True
 ---

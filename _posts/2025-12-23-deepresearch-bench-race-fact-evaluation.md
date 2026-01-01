@@ -4,7 +4,7 @@ title: DeepResearch Bench의 RACE와 FACT 평가 방법
 author: 'Juho'
 date: 2025-12-23 14:00:00 +0900
 categories: [LLM]
-tags: [llm, research-agent, evaluation, benchmark, deep-research, race, fact, citation]
+tags: [LLM, research-agent, evaluation, Benchmark, deep-research, race, fact, citation]
 pin: True
 toc: True
 ---
