@@ -2,7 +2,7 @@
 layout: post
 title: Claude의 Healthcare 및 Life Sciences 분야 진출
 author: 'Juho'
-date: 2026-01-17 10:00:00 +0900
+date: 2026-01-17 00:00:00 +0900
 categories: [Claude]
 tags: [AI, LLM, Healthcare, Life Sciences]
 pin: True
