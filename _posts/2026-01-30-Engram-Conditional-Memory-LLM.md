@@ -2,7 +2,7 @@
 layout: post
 title: Engram - 조건부 메모리 검색을 통한 LLM의 새로운 희소성 축
 author: 'Juho'
-date: 2026-01-31 00:00:00 +0900
+date: 2026-01-30 00:00:00 +0900
 categories: [AI]
 tags: [AI, LLM]
 pin: True
