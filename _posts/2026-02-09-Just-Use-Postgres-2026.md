@@ -2,7 +2,7 @@
 layout: post
 title: 2026년, 그냥 PostgreSQL을 쓰자
 author: 'Juho'
-date: 2026-02-23 02:00:00 +0900
+date: 2026-02-09 02:00:00 +0900
 categories: [PostgreSQL]
 tags: [PostgreSQL, Database]
 pin: True

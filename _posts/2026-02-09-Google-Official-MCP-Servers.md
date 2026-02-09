@@ -2,7 +2,7 @@
 layout: post
 title: Google 공식 MCP 서버 모음 - Google Cloud 서비스 통합
 author: 'Juho'
-date: 2026-02-22 01:00:00 +0900
+date: 2026-02-09 01:00:00 +0900
 categories: [MCP]
 tags: [MCP, GCP, Google Cloud]
 pin: True
