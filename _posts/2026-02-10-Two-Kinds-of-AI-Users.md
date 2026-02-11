@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 두 종류의 AI 사용자: 놀라운 격차가 벌어지고 있다
+title: '두 종류의 AI 사용자: 놀라운 격차가 벌어지고 있다'
 author: 'Juho'
 date: 2026-02-10 02:00:00 +0900
 categories: [AI]
