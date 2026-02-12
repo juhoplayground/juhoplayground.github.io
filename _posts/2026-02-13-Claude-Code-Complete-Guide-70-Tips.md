@@ -2,7 +2,7 @@
 layout: post
 title: "Claude Code 완전 가이드: 해커톤 우승자의 70가지 파워 팁"
 author: 'Juho'
-date: 2026-02-14 00:00:00 +0900
+date: 2026-02-13 01:00:00 +0900
 categories: [Dev]
 tags: [AI, Dev, Skill Development]
 pin: True
