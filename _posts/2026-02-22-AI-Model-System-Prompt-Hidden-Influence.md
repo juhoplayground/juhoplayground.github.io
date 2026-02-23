@@ -83,5 +83,5 @@ AI 에이전트를 도입하거나 구축할 때 모델 선택만큼 시스템 �
 
 ## Reference
 
-- [How System Prompts Reveal Model Biases - nilenso blog](http://blog.nilenso.com/blog/2026/02/12/how-system-prompts-reveal-model-biases/)
+- [How System Prompts Reveal Model Biases - nilenso blog](https://blog.nilenso.com/blog/2026/02/12/how-system-prompts-reveal-model-biases/)
 - [How System Prompts Define Agent Behavior - Drew Breunig](https://www.dbreunig.com/2026/02/10/system-prompts-define-the-agent-as-much-as-the-model.html)
