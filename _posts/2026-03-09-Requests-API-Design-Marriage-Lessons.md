@@ -2,7 +2,7 @@
 layout: post
 title: "Python requests가 가르쳐준 결혼 생활의 원칙"
 author: 'Juho'
-date: 2026-03-10 00:00:00 +0900
+date: 2026-03-09 00:00:00 +0900
 categories: [Dev]
 tags: [Dev, Python]
 pin: True
