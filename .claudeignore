@@ -1,0 +1,12 @@
+_site/
+.jekyll-cache/
+vendor/
+.bundle/
+node_modules/
+assets/js/dist/
+*.gem
+.idea/
+.vscode/
+google*.html
+naver*.html
+.git/
