@@ -4,7 +4,7 @@ title: LangSmith vs Langfuse
 author: 'Juho'
 date: 2025-12-14 00:00:00 +0900
 categories: [LLM]
-tags: [LangSmith, Langfuse, LLM, Observability, Tracing, evaluation]
+tags: [LangSmith, Langfuse, LLM, Observability, Tracing, Evaluation]
 pin: True
 toc: true
 ---
