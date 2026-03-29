@@ -26,7 +26,7 @@ toc: True
 3. [핵심 내용](#핵심-내용)
    - [Anthropic의 장기 실행 에이전트 하네스](#anthropic의-장기-실행-에이전트-하네스)
    - [OpenAI Codex 팀의 에이전트 퍼스트 개발](#openai-codex-팀의-에이전트-퍼스트-개발)
-   - [Karpathy의 AutoResearch - 자율 AI 연구 에이전트](#karpathys-autoresearch---자율-ai-연구-에이전트)
+   - [Karpathy의 AutoResearch - 자율 AI 연구 에이전트](#karpathy의-autoresearch---자율-ai-연구-에이전트)
    - [MiniMax M2.7 - 자기 진화하는 AI 모델](#minimax-m27---자기-진화하는-ai-모델)
 4. [의미와 시사점](#의미와-시사점)
 5. [결론](#결론)
