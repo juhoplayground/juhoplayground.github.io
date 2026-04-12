@@ -139,3 +139,4 @@ AI에게 화를 낸다고 더 좋은 답변을 얻을 수 있는 것은 아니�
 ## Reference
 
 - [Do Emotions in Prompts Matter? Effects of Emotional Framing on Large Language Models](https://arxiv.org/abs/2604.02236)
+- [Anthropic Research: Emotion Concepts and Function](https://www.anthropic.com/research/emotion-concepts-function)
