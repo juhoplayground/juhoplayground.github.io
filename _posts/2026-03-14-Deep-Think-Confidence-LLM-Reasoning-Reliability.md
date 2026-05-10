@@ -22,84 +22,203 @@ toc: True
 
 ## 목차
 1. [개요](#개요)
-2. [방법론](#방법론)
-   - [신뢰도 기반 추론 평가](#신뢰도-기반-추론-평가)
-   - [평가 벤치마크와 모델](#평가-벤치마크와-모델)
-3. [주요 결과](#주요-결과)
-   - [신뢰도와 정확성의 상관관계](#신뢰도와-정확성의-상관관계)
-   - [실용적 의의](#실용적-의의)
-4. [한계와 주의사항](#한계와-주의사항)
-5. [결론](#결론)
-6. [Reference](#reference)
+2. [배경과 선행 연구](#배경과-선행-연구)
+   - [Test-time scaling과 majority voting의 한계](#test-time-scaling과-majority-voting의-한계)
+   - [Related Work 정리](#related-work-정리)
+3. [방법론](#방법론)
+   - [Confidence 측정 기법 5종](#confidence-측정-기법-5종)
+   - [Offline DeepConf](#offline-deepconf)
+   - [Online DeepConf](#online-deepconf)
+4. [실험 셋업](#실험-셋업)
+5. [주요 결과](#주요-결과)
+   - [Offline 정확도](#offline-정확도)
+   - [GPT-OSS-120B AIME25 99.9%](#gpt-oss-120b-aime25-999)
+   - [Online 토큰 절감과 정확도](#online-토큰-절감과-정확도)
+   - [Confidence 측정 기법 비교](#confidence-측정-기법-비교)
+6. [한계와 디스커션](#한계와-디스커션)
+7. [결론](#결론)
+8. [Reference](#reference)
 
 ## 개요
 
-[Deep Think with Confidence](https://arxiv.org/abs/2508.15260){:target="_blank"}는 언어 모델이 자신의 추론 과정의 신뢰성을 더 잘 평가할 수 있는 방법을 탐구한 연구 논문이다.
-Yichao Fu, Xuewei Wang, Yuandong Tian, Jiawei Zhao가 공동 저술하였다.
-이 연구는 신뢰도(confidence)를 확장된 추론의 품질을 평가하는 핵심 지표로 활용하는 방법을 제안한다.
-LLM이 생성하는 추론 체인의 내부 행동을 분석하여, 정확한 추론과 결함 있는 추론 경로를 구별할 수 있는 지표를 개발하는 것이 이 논문의 핵심 목표이다.
+"Deep Think with Confidence(DeepConf)"는 Meta AI와 UCSD 공동 연구로, LLM 추론 trace의 내부 confidence 신호를 활용해 저품질 trace를 필터링하고 동시에 토큰 사용량을 크게 줄이는 test-time 기법을 제안한다.
+저자는 Yichao Fu(UCSD 인턴), Xuewei Wang, Yuandong Tian, Jiawei Zhao이며, 2025년 8월 21일 arXiv에 공개되었다.
+
+논문 abstract의 핵심은 다음과 같다.
+LLM은 self-consistency와 majority voting 같은 test-time scaling 기법으로 추론 정확도를 높일 수 있지만, 정확도 수익이 점점 줄어들고 연산 비용이 선형적으로 증가하는 한계가 있다.
+DeepConf는 추가 학습이나 하이퍼파라미터 조정 없이 모델 내부 confidence 신호를 사용해 저품질 추론 trace를 생성 도중 또는 생성 후에 동적으로 필터링한다.
+GPT-OSS-120B로 AIME 2025에서 DeepConf@512는 최대 99.9% 정확도에 도달했고, 동일 정확도 기준 생성 토큰 수를 최대 84.7%까지 줄였다.
+
+## 배경과 선행 연구
+
+### Test-time scaling과 majority voting의 한계
+
+LLM 추론 능력 향상은 두 축에서 진행되어 왔다.
+첫째, CoT(Chain-of-Thought)의 깊이를 늘리는 단일 trace 길이 확장.
+둘째, self-consistency처럼 다수의 trace를 병렬 생성하고 majority voting으로 답을 집계하는 병렬 확장.
+저자들은 두 번째 축의 비용 문제를 정량화한다.
+Qwen3-8B로 AIME25 pass@1을 68%에서 82%로 끌어올리려면 trace 511개를 추가로 생성해야 하며 토큰 1억 개가 추가로 소비된다.
+
+또한 majority voting은 모든 trace의 표를 동등하게 다루므로 저품질 trace가 다수일 때 결과가 흔들린다.
+trace 품질을 측정하는 신호로 token entropy나 average confidence가 제안되었지만, 두 가지 한계가 있다.
+첫째, 전역 평균은 trace 중간의 결정적 추론 붕괴(예: "wait", "however", "think again" 같은 토큰에서 발생하는 confidence 급락)를 가린다.
+둘째, 전역 측정은 trace가 완전히 끝난 뒤에야 계산되어 조기 종료가 불가능하다.
+
+### Related Work 정리
+
+| 카테고리 | 주요 흐름 | 본 연구와의 차이 |
+|----------|-----------|------------------|
+| CoT 깊이 확장 | o1 (Jaech 2024), DeepSeek-R1 (Guo 2025), Kimi K1.5, Qwen3, Grok-4 | 단일 trace 길이 — DeepConf는 병렬 trace 품질 필터링 |
+| 병렬 확장 | Self-Consistency (Wang 2023), Best-of-N (Brown 2024), REBASE | 균등 voting — DeepConf는 confidence 가중 |
+| 효율 voting | ESC, RASC, Adaptive-Consistency, Dynamic Voting, Dynasor | 표본 수만 줄임 — DeepConf는 trace 내부 토큰까지 절감 |
+| Confidence 추정 | Kang 2025 (self-certainty), Fadeeva 2024 (token entropy), Chuang 2024 (confidence tokens) | 전역 평균 — DeepConf는 local segment 기반 |
+
+DeepConf의 차별점은 local confidence 신호(group, bottom-10%, lowest, tail)를 활용해 trace 중간의 추론 붕괴를 정확히 잡아낸다는 점, 그리고 그 신호를 online 생성 단계에서 조기 종료 트리거로 사용한다는 점이다.
 
 ## 방법론
 
-### 신뢰도 기반 추론 평가
+### Confidence 측정 기법 5종
 
-이 연구에서는 신뢰도 점수가 해결 정확성과 상관관계를 갖는 기법을 제안한다.
-추론 체인 중 내부 모델 행동을 분석하는 방식으로 접근한다.
-정확한 추론과 결함 있는 추론 경로를 구별하는 지표를 개발하여, 모델이 스스로의 추론 품질을 판단할 수 있도록 한다.
-이를 통해 모델의 추론 과정에서 신뢰할 수 있는 결과와 그렇지 않은 결과를 분류하는 체계적인 프레임워크를 구축한다.
+토큰 confidence는 위치 i에서 top-k 로그확률의 음의 평균으로 정의된다.
 
-### 평가 벤치마크와 모델
+```
+C_i = -(1/k) Σ_{j=1..k} log P_i(j)
+```
 
-연구에서는 다양한 벤치마크와 모델을 활용하여 신뢰도 평가 기법의 효과를 검증하였다.
+여기서 k는 상위 토큰 수, P_i(j)는 j-번째 어휘 토큰 확률이다.
+높은 C_i는 분포가 뾰족함(높은 확신)을, 낮은 C_i는 불확실함을 의미한다.
 
-| 구분 | 항목 | 설명 |
-|------|------|------|
-| 벤치마크 | AIME | American Invitational Mathematics Examination 수학 문제 |
-| 벤치마크 | HMMT | Harvard-MIT Mathematics Tournament 수학 대회 문제 |
-| 벤치마크 | MathArena | 수학 분야 종합 평가 |
-| 벤치마크 | GPQA | Google-Proof Q&A 도메인 전문성 테스트 |
-| 평가 모델 | DeepSeek-R1 | 추론 특화 오픈소스 모델 |
-| 평가 모델 | Qwen3 | 알리바바 개발 대규모 언어 모델 |
-| 평가 모델 | GPT-5 | OpenAI의 최신 언어 모델 |
-| 평가 모델 | Grok-4 | xAI의 대규모 언어 모델 |
+| 측정 기법 | 정의 | 특성 |
+|-----------|------|------|
+| Average Trace Confidence | 전체 trace 토큰 평균 | 전역 신호, 중간 붕괴 가림 |
+| Group Confidence | 슬라이딩 윈도우(n=1024 또는 2048) 내 평균 | local 신호 |
+| Bottom-10% Group Confidence | 가장 낮은 10% 그룹들의 평균 | 결정적 붕괴 강조 |
+| Lowest Group Confidence | 모든 그룹 중 최솟값 | 극단적 local 신호, online 종료 트리거 |
+| Tail Confidence | 마지막 2048 토큰 평균 | 결론부 품질 강조 |
 
-AIME과 HMMT는 고난도 수학 추론 능력을 평가하기 위한 벤치마크로 활용되었다.
-GPQA는 도메인 전문성이 필요한 질문에 대한 추론 신뢰도를 측정하는 데 사용되었다.
+저자는 HMMT25 30문제 × 4096 trace 데이터로 정답/오답 trace의 confidence 분포를 비교한 결과, bottom-10%와 tail 측정이 평균 confidence보다 정답·오답을 더 명확히 분리함을 보였다.
+
+### Offline DeepConf
+
+offline 모드는 모든 trace 생성이 완료된 뒤 confidence 가중 voting과 필터링을 적용한다.
+
+```
+V(a) = Σ_{t∈T} C_t · I(answer(t) = a)
+```
+
+여기서 C_t는 위 5종 중 하나의 trace-level confidence다.
+필터링은 retention ratio η로 표현되며 η=10%는 상위 10% trace만, η=90%는 상위 90% trace를 voting에 포함한다.
+
+### Online DeepConf
+
+online 모드는 두 알고리즘을 제공한다.
+DeepConf-low(η=10%)와 DeepConf-high(η=90%)이며 둘 다 두 단계로 구성된다.
+
+첫째, offline warmup으로 N_init=16개의 완전한 trace를 생성해 stopping threshold s를 설정한다.
+
+```
+s = Percentile_{100−η}({C_t : t ∈ T_warmup})
+```
+
+DeepConf-low는 90 percentile, DeepConf-high는 10 percentile에 해당하며, threshold는 lowest group confidence 기준으로 잡힌다.
+
+둘째, adaptive sampling으로 trace 생성 도중 group confidence가 s 아래로 떨어지면 즉시 종료하고, 합의 비율 β = V(â) / Σ V(a)가 consensus threshold τ=0.95를 넘으면 추가 sampling을 멈춘다.
+
+## 실험 셋업
+
+| 항목 | 값 |
+|------|-----|
+| 평가 모델 | DeepSeek-8B, Qwen3-8B, Qwen3-32B, GPT-OSS-20B, GPT-OSS-120B |
+| 벤치마크 | AIME24, AIME25, BRUMO25, HMMT25, GPQA-Diamond |
+| 사전 생성 trace pool | 문제당 4096개 |
+| 기본 voting 크기 | K=512 |
+| Group window | 2048 토큰 |
+| Online warmup | N_init=16 trace |
+| Consensus threshold | τ=0.95 |
+| 반복 실험 | 설정당 64회 평균 |
+| Baseline | self-consistency + majority voting (cons@K) |
+
+DeepSeek-8B는 DeepSeek-R1 (0528) 모델에서 distillation된 Qwen3-8B 기반 모델이다.
+GPT-OSS-120B는 OpenAI가 공개한 오픈 가중치 reasoning 모델이며, 본 논문은 no-tools 설정으로 평가한다.
 
 ## 주요 결과
 
-### 신뢰도와 정확성의 상관관계
+### Offline 정확도
 
-연구 결과, 신뢰도 점수는 모델의 해결 정확성과 유의미한 상관관계를 보였다.
-추론 체인 내부의 행동 패턴을 분석함으로써, 정확한 답변과 오류가 포함된 답변을 효과적으로 구별할 수 있었다.
-이는 모델이 자신의 추론 과정에 대한 메타인지적 평가를 수행할 수 있음을 시사한다.
+K=512 voting에서 confidence 가중과 필터링은 cons@512 대비 일관된 향상을 보였다.
 
-### 실용적 의의
+| 모델 | 데이터셋 | Pass@1 | Cons@512 | Mean@512 | Bottom-10@10% | Tail@10% |
+|------|----------|--------|----------|----------|---------------|----------|
+| DeepSeek-8B | AIME24 | 83.0 | 86.7 | 86.7 | 93.3 | 93.3 |
+| DeepSeek-8B | AIME25 | 76.9 | 82.3 | 82.3 | 87.5 | 87.4 |
+| DeepSeek-8B | HMMT25 | 58.1 | 69.6 | 69.9 | 79.5 | 83.9 |
+| Qwen3-32B | AIME24 | 80.6 | 85.3 | 85.7 | 90.8 | 89.4 |
+| GPT-OSS-120B | AIME24 | 91.9 | 96.7 | 96.7 | 96.5 | 97.4 |
+| GPT-OSS-120B | AIME25 | 91.8 | 97.0 | 97.1 | 98.1 | 99.9 |
 
-이 연구의 결과는 여러 실용적인 측면에서 의미를 갖는다.
+η=10% 공격적 필터링은 평균 +1.22%p의 정확도 향상을 가져오고, 일부 설정에서는 +9.38%p까지 상승했다.
+반면 η=90% 보수적 필터링은 cons@512 대비 −0.21%에서 +0.73% 사이로 안정적으로 동작한다.
 
-| 적용 분야 | 기대 효과 |
-|-----------|-----------|
-| 출력 필터링 | 신뢰도 점수를 기반으로 모델 출력의 품질을 자동으로 필터링 가능 |
-| 고위험 애플리케이션 | 의료, 법률 등 고위험 분야에서 모델 출력의 신뢰성 향상 |
-| 컴퓨팅 효율성 | 선택적 심층 추론을 통한 효율적 컴퓨팅 자원 활용 |
+### GPT-OSS-120B AIME25 99.9%
 
-신뢰도 기반 필터링을 통해 모델이 확신이 낮은 답변을 식별하고, 추가적인 추론이나 인간 검토를 요청할 수 있다.
-선택적 심층 추론은 모든 질문에 동일한 수준의 연산을 투입하는 대신, 신뢰도가 낮은 경우에만 추가 추론을 수행하여 자원을 효율적으로 사용하는 접근 방식이다.
+가장 인상적인 수치는 GPT-OSS-120B에서 AIME25 정확도 99.9%를 달성한 점이다.
+Tail Confidence(마지막 2048 토큰)를 측정하고 상위 10% trace만 보존한 Tail(2k)@10% 설정에서 도달한 수치로, cons@512(97.0%)와 pass@1(91.8%)을 큰 폭으로 능가한다.
+이는 vehicle 벤치마크 한 곳에서 사실상 saturate에 도달한 사례다.
 
-## 한계와 주의사항
+### Online 토큰 절감과 정확도
 
-이 연구는 특정 벤치마크와 모델에 대해 평가되었으므로, 모든 도메인과 모델에 일반화하기에는 한계가 있을 수 있다.
-수학 및 전문 지식 분야에 집중된 평가이므로, 일반적인 대화나 창작 등 다른 유형의 추론에 대한 적용 가능성은 추가 연구가 필요하다.
-또한 신뢰도 점수 자체가 모델의 내부 표현에 기반하므로, 모델 아키텍처에 따라 신뢰도 평가의 정확성이 달라질 수 있다.
+K=512 budget의 online DeepConf는 cons@512 대비 토큰 사용을 큰 폭으로 줄이면서 정확도를 유지한다.
+
+| 모델 | 데이터셋 | Cons@512 토큰 / 정확도 | DeepConf-high 토큰 변화 / 정확도 | DeepConf-low 토큰 변화 / 정확도 |
+|------|----------|------------------------|------------------------------------|----------------------------------|
+| DeepSeek-8B | AIME24 | 3.55×10^8 / 86.7% | −59.0% / 86.7% | −77.9% / 92.5% |
+| DeepSeek-8B | AIME25 | 4.01×10^8 / 82.3% | −40.9% / 81.4% | −69.0% / 86.4% |
+| DeepSeek-8B | HMMT25 | 4.49×10^8 / 69.8% | −23.5% / 70.0% | −64.4% / 77.6% |
+| Qwen3-32B | AIME24 | 2.00×10^8 / 84.8% | −56.0% / 86.4% | −66.8% / 89.5% |
+| GPT-OSS-120B | AIME25 | 3.23×10^8 / 97.1% | −56.0% / 97.0% | −84.7% / 97.9% |
+
+DeepSeek-8B 평균 토큰 절감은 DeepConf-low 62.88%, DeepConf-high 47.67%로 동일 정확도 대비 확실한 비용 우위를 보인다.
+GPT-OSS-120B AIME25에서 −84.7% 토큰 절감과 동시에 정확도 +0.8%p 향상을 달성한 사례가 가장 극단적이다.
+
+### Confidence 측정 기법 비교
+
+23개 모델·데이터셋 조합 평균을 비교한 ablation 결과는 다음과 같다.
+
+| 측정 기법 | 평균 정확도 |
+|-----------|-------------|
+| Majority Voting (baseline) | 83.0 |
+| Mean Confidence@10% | 83.9 |
+| Bottom-10%@10% | 84.0 |
+| Lowest Group Confidence (2k)@10% | 84.4 |
+| Tail (2k)@10% | 84.5 |
+| Tail (10%)@10% | 84.6 |
+
+Tail과 lowest group 같은 local 신호가 mean confidence보다 일관되게 더 효과적이며, head(첫 10% 토큰) 기반 confidence는 majority voting과 거의 차이가 없거나 오히려 떨어진다.
+이는 추론의 초반은 setup과 paraphrase가 지배해 변별력이 낮다는 점을 보여준다.
+
+## 한계와 디스커션
+
+저자가 명시한 한계는 두 가지로 요약된다.
+첫째, 일부 설정에서 모델이 잘못된 답에 자신감을 집중시키는 confidently wrong 현상이 발생한다.
+GPT-OSS-120B HMMT25에서 η=10% 필터링이 정확도를 떨어뜨린 사례가 대표적이다.
+이런 경우 보수적 η=90% 설정이 더 안전하다.
+
+둘째, 적정 retention ratio η가 데이터셋과 모델에 따라 다르다.
+top-25% 또는 top-50%가 가장 좋은 모델·데이터셋 조합도 존재하므로, η는 사전 검증이 필요한 하이퍼파라미터로 봐야 한다.
+
+future work 섹션에서 저자는 두 방향을 제시한다.
+첫째, RL 학습에 confidence 기반 조기 종료를 통합하여 정책 탐험과 sample 효율성을 개선하는 방향.
+둘째, 더 견고한 confidence calibration과 uncertainty quantification 기법으로 confidently wrong 사례를 줄이는 방향이다.
+
+ablation은 consensus threshold τ에서 τ=0.95가 최적임을 보였다(정확도 손실 없이 토큰 절반 이상 절감), warmup 크기 N_init=16이 정확도 안정성과 비용의 균형점이며, retention η는 데이터셋·모델별로 10~50% 사이에서 최적값이 갈린다.
 
 ## 결론
 
-Deep Think with Confidence 연구는 LLM의 추론 과정에서 신뢰도를 평가하는 체계적인 방법을 제시하였다.
-AIME, HMMT, MathArena, GPQA 등의 벤치마크에서 DeepSeek-R1, Qwen3, GPT-5, Grok-4 모델을 대상으로 실험을 수행하였다.
-신뢰도 점수가 해결 정확성과 상관관계를 갖는다는 것을 입증하여, 모델 출력 필터링, 고위험 애플리케이션 신뢰성 향상, 효율적 컴퓨팅 자원 활용 등 실용적인 가치를 제공한다.
-이 연구는 LLM이 자신의 추론 품질을 스스로 판단할 수 있는 가능성을 열어, 향후 더 신뢰할 수 있는 AI 시스템 구축에 기여할 것으로 기대된다.
+DeepConf는 self-consistency의 두 가지 약점, 즉 모든 trace의 균등 가중과 전역 confidence의 중간 붕괴 마스킹을 동시에 해결한다.
+local confidence(group, bottom-10%, lowest, tail) 다섯 가지를 비교하고 가장 효과적인 조합을 찾아낸 ablation을 통해, GPT-OSS-120B AIME25 99.9%, DeepSeek-8B AIME25 정확도 +5.1%p, 토큰 절감 최대 84.7%라는 정량 결과를 보였다.
+추가 학습 없이 추론 시점에 적용 가능하고 5개 모델 × 5개 벤치마크에 걸쳐 일관된 효과를 입증해, test-time compression의 실용 도구로 자리잡을 가능성이 높다.
 
 ## Reference
 
-- [Deep Think with Confidence](https://arxiv.org/abs/2508.15260)
+- [Deep Think with Confidence (arXiv:2508.15260)](https://arxiv.org/abs/2508.15260/)
+- [Project Page - DeepConf](https://jiaweizzhao.github.io/deepconf/)
