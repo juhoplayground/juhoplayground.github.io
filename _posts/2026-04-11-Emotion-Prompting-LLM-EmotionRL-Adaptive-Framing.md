@@ -22,121 +22,161 @@ toc: True
 
 ## 목차
 1. [개요](#개요)
-2. [배경](#배경)
-3. [연구 설계](#연구-설계)
-   - [감정 유형과 벤치마크](#감정-유형과-벤치마크)
-   - [평가 모델](#평가-모델)
-4. [주요 결과](#주요-결과)
-   - [고정 감정 프리픽스의 한계](#고정-감정-프리픽스의-한계)
-   - [감정 강도의 효과](#감정-강도의-효과)
-   - [과제별 민감도 차이](#과제별-민감도-차이)
-5. [EmotionRL 프레임워크](#emotionrl-프레임워크)
-   - [오프라인 훈련](#오프라인-훈련)
-   - [온라인 추론](#온라인-추론)
-6. [한계와 시사점](#한계와-시사점)
+2. [배경과 선행 연구](#배경과-선행-연구)
+   - [감정 프레이밍 연구의 공백](#감정-프레이밍-연구의-공백)
+   - [Related Work 정리](#related-work-정리)
+3. [방법론](#방법론)
+   - [감정 분류와 자극 생성](#감정-분류와-자극-생성)
+   - [EmotionRL 정책 학습](#emotionrl-정책-학습)
+4. [실험 셋업](#실험-셋업)
+5. [주요 결과](#주요-결과)
+   - [정적 감정 prefix는 효과 약함](#정적-감정-prefix는-효과-약함)
+   - [감정 강도 영향](#감정-강도-영향)
+   - [인간 vs LLM 작성 prefix](#인간-vs-llm-작성-prefix)
+   - [EmotionRL의 적응적 우위](#emotionrl의-적응적-우위)
+6. [한계와 디스커션](#한계와-디스커션)
 7. [결론](#결론)
 8. [Reference](#reference)
 
 ## 개요
 
-"화를 내면 AI가 더 잘 답한다"는 속설이 있다.
-하버드 연구진이 이 질문에 체계적으로 답하는 논문 "Do Emotions in Prompts Matter? Effects of Emotional Framing on Large Language Models"를 발표했다.
-결론부터 말하면, 고정된 감정 표현은 대부분의 경우 LLM 성능에 거의 영향을 미치지 않는다.
-그러나 질문별로 감정을 적응적으로 선택하는 EmotionRL 프레임워크를 사용하면 일관된 성능 향상이 가능하다는 점이 핵심 발견이다.
+"Do Emotions in Prompts Matter? Effects of Emotional Framing on Large Language Models"는 사용자 쿼리의 감정적 어조가 LLM 정확도에 어떤 영향을 주는지 6개 벤치마크에서 체계적으로 조사한 논문이다.
+저자는 Minda Zhao, Yutong Yang, Chufei Peng, Rachel Gonsalves, Weiyue Li, Ruyi Yang, Zhixi Liu, Mengyu Wang(Harvard University, Bryn Mawr College)이다.
 
-## 배경
+논문 abstract의 핵심은 다음과 같다.
+정적 감정 prefix는 정확도에 작은 변화만 유발하며 신뢰할 만한 개입이 되지 못한다.
+저자들은 입력별로 감정을 적응적으로 선택하는 EmotionRL 프레임을 도입해 정적 감정 prompting보다 일관된 개선을 얻는다.
+결론은 감정 어조가 약하지만 입력 의존적인 신호이며 적응적 통제로만 의미 있게 활용 가능하다는 것이다.
 
-LLM 사용자 사이에서 "감정적으로 강하게 요청하면 더 좋은 결과가 나온다"는 경험적 믿음이 퍼져 있다.
-예를 들어 "이것은 내 경력에 매우 중요합니다"와 같은 감정적 문구를 프롬프트에 추가하는 방식이다.
-이 연구는 이러한 감정적 프레이밍이 실제로 LLM의 정확도에 영향을 미치는지를 6개 벤치마크와 3개 모델에 걸쳐 체계적으로 검증했다.
+## 배경과 선행 연구
 
-## 연구 설계
+### 감정 프레이밍 연구의 공백
 
-### 감정 유형과 벤치마크
+저자들은 인간 의사소통이 본질적으로 감정 가치를 내포하지만 LLM 응답이 이에 어떻게 반응하는지는 충분히 조사되지 않았다고 본다.
+선행 연구는 명시적 역할 부여나 전략적 시나리오 재구성에서 감정을 다뤘지만 다음 세 가지 공백이 남아 있다.
+첫째, 1인칭 감정 prefix가 표준 벤치마크 전반에서 체계적 효과를 내는지.
+둘째, 효과가 prefix 작성자(인간 vs LLM)에 따라 달라지는지.
+셋째, 감정을 고정 조건이 아닌 적응적으로 다뤄야 하는지.
 
-연구진은 6가지 기본 감정을 프롬프트 프리픽스로 사용했다.
+### Related Work 정리
 
-| 감정 유형 | 설명 |
-|-----------|------|
-| 행복(Happiness) | 긍정적 감정 표현 |
-| 슬픔(Sadness) | 부정적 감정 표현 |
-| 공포(Fear) | 위협 관련 감정 |
-| 분노(Anger) | 강한 부정적 감정 |
-| 혐오(Disgust) | 거부 관련 감정 |
-| 놀람(Surprise) | 예상 외 반응 |
+| 카테고리 | 주요 흐름 | 본 연구와의 차이 |
+|----------|-----------|------------------|
+| 역할 기반 prompting | "act as a doctor" 같은 persona | 명시적 역할 — 본 연구는 1인칭 감정 |
+| Chain-of-thought | 추론 강화 prompting | 인지 측면 — 본 연구는 affective 측면 |
+| Persuasion | 전략적 설득 시나리오 | 도메인 특화 — 본 연구는 일반 벤치마크 |
+| Robustness | 적대적 프롬프트 | 공격 — 본 연구는 자연 발화 |
 
-평가에 사용된 벤치마크는 다음과 같다.
+본 연구의 차별점은 일반 벤치마크 6개에 대해 6개 감정 prefix를 체계적으로 비교하고, 적응형 학습 정책 EmotionRL을 추가한 것이다.
 
-| 벤치마크 | 평가 영역 |
-|----------|-----------|
-| GSM8K | 수학적 추론 |
-| BIG-Bench Hard | 일반 추론 |
-| MedQA | 의료 지식 |
-| BoolQ | 독해 |
-| OpenBookQA | 상식 추론 |
-| SocialIQA | 사회적 추론 |
+## 방법론
 
-### 평가 모델
+### 감정 분류와 자극 생성
 
-실험에는 Qwen3-14B, Llama 3.3-70B, DeepSeek-V3.2 세 가지 모델이 사용되었다.
-모델 크기와 아키텍처가 다양하여 결과의 일반화 가능성을 높였다.
+Plutchik 기본 감정 중 6가지를 채택한다(happiness, sadness, fear, anger, disgust, surprise).
+GPT-4o가 단일 문장 감정 표현을 생성하되, 수치값·entity·범위·난이도·사실 내용을 변경하지 않도록 제약한다.
+
+### EmotionRL 정책 학습
+
+action space.
+
+```
+A = { ANGER, DISGUST, FEAR, HAPPINESS, SADNESS, SURPRISE }
+```
+
+state는 frozen sentence embedding이다(backbone LLM과 무관).
+
+```
+s_i = f_emb(x_i) ∈ R^d
+```
+
+reward는 binary correctness signal.
+
+```
+r_i^(k) = 1[ ŷ_i^(k) = y_i ]
+```
+
+정책은 2-layer MLP다.
+
+```
+z_i = W_2 * σ( W_1 * s_i + b_1 ) + b_2
+```
+
+soft supervision weight (centered reward 기반).
+
+```
+w_i^(k) = exp( (r_i^(k) - r̄_i) / τ ) / Σ_j exp( (r_i^(j) - r̄_i) / τ )
+```
+
+손실은 weighted cross-entropy.
+
+```
+L = - Σ_i Σ_k w_i^(k) * log π_θ(a_k | s_i)
+```
+
+τ=1로 적당한 smoothing을 준다.
+test 시 단일 greedy 선택 후 frozen LLM에 1회 query한다.
+
+```
+a* = argmax π_θ(a_k | s)
+```
+
+## 실험 셋업
+
+| 항목 | 값 |
+|------|-----|
+| Inference | zero-shot, temperature 0.0 |
+| 모델 | Qwen3-14B, Llama 3.3-70B, DeepSeek-V3.2 |
+| 데이터셋 | GSM8K, BBH, MedQA, BoolQ, OpenBookQA, SocialIQA |
+| 감정 수 | 6 (Plutchik 기본 감정) |
+| 정책 | 2-layer MLP, softmax(temperature τ=1) |
+| EmotionRL train | GSM8K, OpenBookQA, SocialIQA, MedQA, BoolQ (BBH는 표준 train split 부재로 제외) |
+| 강도 검증 | MedQA-US, slight/moderate/extreme |
+| 작성자 검증 | MedQA-US 250문항(219개 사용 가능), 인간 vs LLM |
 
 ## 주요 결과
 
-### 고정 감정 프리픽스의 한계
+### 정적 감정 prefix는 효과 약함
 
-대부분의 과제에서 감정적 프레이밍은 중립 기준선과 통계적으로 유의미한 차이를 보이지 않았다.
-연구진은 감정 프리픽스가 "강력한 개입이 아닌 약한 섭동(mild perturbation)"에 불과하다고 결론지었다.
-고정된 감정 표현을 모든 질문에 일률적으로 적용하는 방식은 신뢰할 만한 성능 개선 방법이 아니다.
+Figure 3에서 6개 벤치마크와 3개 모델 조합 전반에서 감정 prefix는 정확도에 큰 변화를 주지 못한다.
+GSM8K와 MedQA-US는 baseline과 거의 동일하다.
+유일한 명확한 예외는 SocialIQA로, 사회적 추론이 본질이므로 감정 컨텍스트가 더 큰 변동을 유발한다.
 
-### 감정 강도의 효과
+### 감정 강도 영향
 
-감정 표현의 강도를 높여도 정확도 변화는 미미했다.
-"조금 화가 납니다"와 "매우 분노합니다" 사이에 유의미한 성능 차이가 나타나지 않았다.
-또한 사람이 직접 작성한 감정 표현과 AI가 생성한 감정 표현 사이에도 유의미한 차이가 없었다.
+MedQA-US에서 slight, moderate, extreme 강도를 비교한 결과 모든 모델에서 변화가 0 부근에 머물렀다.
+강한 표현이 약간의 하향 추세만 유발해, 강도가 효과의 크기는 조정하지만 regime 변화는 일으키지 않는다.
 
-### 과제별 민감도 차이
+### 인간 vs LLM 작성 prefix
 
-모든 과제가 감정에 동일하게 반응하지는 않았다.
-수학 문제(GSM8K)와 의료 지식(MedQA)은 감정 프레이밍에 거의 반응하지 않았다.
-반면 사회적 추론(SocialIQA)은 감정 맥락에 상대적으로 더 민감한 반응을 보였다.
-이는 대인관계 추론이 필요한 과제에서 감정적 맥락이 일종의 힌트로 작용할 수 있음을 시사한다.
+Qwen3-14B를 MedQA-US에 적용한 비교에서 인간 작성과 LLM 작성 prefix가 거의 동일한 정확도를 보였다.
+이는 prefix 작성 출처가 결과를 좌우하지 않음을 입증해 본 연구 결론의 robustness를 뒷받침한다.
 
-## EmotionRL 프레임워크
+### EmotionRL의 적응적 우위
 
-연구의 가장 주목할 만한 기여는 EmotionRL이라는 적응형 감정 프롬프팅 프레임워크의 제안이다.
-고정된 감정을 쓰는 대신, 질문의 특성에 따라 최적의 감정을 자동으로 선택하는 접근법이다.
+Figure 6에서 EmotionRL은 5개 태스크 전반에서 일관되게 경쟁력 있고 종종 더 우수한 결과를 보였다.
+정적 감정 prompting은 일관성이 없으며 일부 태스크에서는 중립적이거나 오히려 성능을 떨어뜨린다.
+입력 조건부 선택이 감정 프레이밍을 신뢰할 만한 개입으로 변환한다는 점을 보여주는 결과다.
 
-### 오프라인 훈련
+## 한계와 디스커션
 
-각 질문에 대해 6가지 감정을 모두 실험하여 어떤 감정이 최적의 결과를 이끌어내는지 학습한다.
-이 과정에서 질문 유형과 감정 사이의 매핑 패턴을 강화학습으로 학습한다.
+저자가 명시한 한계와 주의사항은 다음과 같다.
+첫째, 감정 분류는 Plutchik 6개로 제한되며 micro-expression이나 mixed emotion은 다루지 않는다.
+둘째, 평가는 영어 중심이며 다국어 감정 표현으로의 일반화는 검증되지 않았다.
+셋째, EmotionRL은 정답 라벨이 있는 데이터셋에 한해 학습 가능하므로 open-ended 생성 태스크에는 직접 적용이 어렵다.
+넷째, sentence embedding이 frozen이므로 감정 의미가 충분히 표현되지 않는 임베딩에서는 정책 학습이 제한된다.
 
-### 온라인 추론
-
-새로운 입력이 들어오면 훈련된 정책이 적절한 감정을 선택한다.
-선택된 감정 프리픽스를 붙여 LLM을 1회만 호출하므로 추가적인 계산 비용이 최소화된다.
-이 적응형 접근법은 고정 감정 프리픽스 대비 일관된 성능 개선을 보여주었다.
-
-## 한계와 시사점
-
-이 연구에는 몇 가지 한계가 있다.
-짧은 프리픽스 형태의 감정 표현만 테스트했으며, 단일 턴 상호작용과 정확도 중심 평가에 집중했다.
-개방형 텍스트 생성, 멀티턴 대화, 안전성 관련 시나리오에서는 감정 프레이밍이 다른 영향을 미칠 수 있다.
-
-실무적 시사점으로는 다음과 같은 점들이 있다.
-프롬프트에 감정을 담아 AI에게 요청하는 것이 틀린 접근은 아니지만, 범용적으로 효과가 있다고 보기 어렵다.
-감정 프롬프팅은 "범용 템플릿" 문제가 아닌 "적응형 라우팅" 문제로 재정의되어야 한다.
-질문의 성격에 맞는 감정을 선택할 수 있다면 성능 개선의 여지가 있다.
+디스커션의 핵심은 두 가지다.
+첫째, 감정 프레이밍은 약하지만 입력 의존적인 신호이며 단일 보편 감정으로 모든 입력을 다룰 수 없다.
+둘째, EmotionRL의 reward-weighted cross-entropy는 binary correctness를 soft 분포로 변환해 상대적 유용성을 학습하는 우아한 설계이며, 다른 input-conditioned prompting 선택 문제에도 일반화 가능하다.
 
 ## 결론
 
-하버드 연구진의 이 연구는 감정적 프롬프팅에 대한 체계적인 근거를 제시했다.
-감정적 톤은 LLM에게 "지배적인 성능 동인도, 완전히 무관한 요소도 아닌, 약하고 입력에 의존적인 신호"로 작용한다.
-고정된 감정 표현을 모든 프롬프트에 적용하는 것은 효과적이지 않지만, 적응적으로 감정을 선택하는 EmotionRL 같은 접근법은 일관된 성능 향상을 달성할 수 있다.
-AI에게 화를 낸다고 더 좋은 답변을 얻을 수 있는 것은 아니지만, 질문에 맞는 감정적 프레이밍을 전략적으로 활용할 여지는 남아 있다.
+본 연구는 6개 벤치마크와 3개 LLM에 대해 정적 감정 prefix가 정확도에 작은 변화만 유발한다는 점을 정량적으로 입증했다.
+강도 변화는 효과를 미세 조정만 할 뿐 regime을 바꾸지 않으며, 인간 vs LLM 작성 prefix는 거의 동일한 결과를 낸다.
+EmotionRL은 입력별 감정 선택을 학습해 정적 prompting의 비일관성을 해소하고 5개 태스크 전반에서 일관된 우위를 보였다.
+감정 프레이밍을 적응적 control 문제로 재정의했다는 점이 본 연구의 핵심 기여다.
 
 ## Reference
 
-- [Do Emotions in Prompts Matter? Effects of Emotional Framing on Large Language Models](https://arxiv.org/abs/2604.02236)
-- [Anthropic Research: Emotion Concepts and Function](https://www.anthropic.com/research/emotion-concepts-function)
+- [Do Emotions in Prompts Matter? Effects of Emotional Framing on Large Language Models (arXiv:2604.02236)](https://arxiv.org/abs/2604.02236/)

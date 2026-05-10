@@ -22,117 +22,213 @@ toc: True
 
 ## 목차
 1. [개요](#개요)
-2. [핵심 혁신점](#핵심-혁신점)
-3. [자발적으로 나타난 능력](#자발적으로-나타난-능력)
-4. [성능 및 벤치마크](#성능-및-벤치마크)
-5. [소규모 모델로의 지식 전이](#소규모-모델로의-지식-전이)
-6. [의의 및 영향](#의의-및-영향)
-7. [Reference](#reference)
-
----
+2. [배경과 선행 연구](#배경과-선행-연구)
+   - [test-time scaling과 o1 흐름](#test-time-scaling과-o1-흐름)
+   - [Related Work 정리](#related-work-정리)
+3. [방법론](#방법론)
+   - [DeepSeek-R1-Zero와 GRPO](#deepseek-r1-zero와-grpo)
+   - [DeepSeek-R1 4단계 파이프라인](#deepseek-r1-4단계-파이프라인)
+   - [Distillation](#distillation)
+4. [실험 셋업](#실험-셋업)
+5. [주요 결과](#주요-결과)
+   - [DeepSeek-R1-Zero 자기진화와 aha moment](#deepseek-r1-zero-자기진화와-aha-moment)
+   - [DeepSeek-R1 본 모델 성능](#deepseek-r1-본-모델-성능)
+   - [Distilled 모델 6종](#distilled-모델-6종)
+   - [Distillation vs RL 비교](#distillation-vs-rl-비교)
+6. [한계와 디스커션](#한계와-디스커션)
+7. [결론](#결론)
+8. [Reference](#reference)
 
 ## 개요
 
-DeepSeek-AI 연구팀이 발표한 DeepSeek-R1 논문은 대규모 언어 모델(LLM)의 추론 능력을 순수 강화학습(Reinforcement Learning)을 통해 개발할 수 있음을 입증한 획기적인 연구입니다.
-이 논문은 2025년 1월 22일에 제출되어 Nature 645권에 게재되었습니다.
+DeepSeek-AI 팀의 "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning"는 supervised fine-tuning 없이 순수 강화학습만으로 LLM이 자발적으로 고급 추론 패턴을 학습할 수 있음을 입증한 연구다.
+저자는 Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Ruoyu Zhang을 비롯한 30여 명의 DeepSeek-AI 연구진이며, 2025년 1월 22일 arXiv에 공개되었고 Nature 645권에 게재되었다.
 
-기존의 추론 능력 향상 방식이 인간이 작성한 추론 데이터에 의존했다면, DeepSeek-R1은 강화학습만으로 모델이 스스로 고급 추론 패턴을 습득할 수 있음을 보여줍니다.
+논문 abstract는 다음과 같은 핵심을 제시한다.
+DeepSeek-R1-Zero는 base 모델에 SFT 없이 RL만 적용한 모델이며, DeepSeek-R1은 cold-start 데이터와 다단계 학습을 결합한 모델이다.
+저자들은 두 모델과 함께 Qwen, Llama 기반 1.5B에서 70B까지의 distilled 변형 6종을 오픈소스로 공개했다.
 
----
+## 배경과 선행 연구
 
-## 핵심 혁신점
+### test-time scaling과 o1 흐름
 
-### 순수 강화학습 기반 추론 학습
+본 논문은 OpenAI o1이 제시한 "test-time scaling" 흐름에 대응한다.
+o1은 추론 시점의 chain-of-thought 길이를 늘려 정확도를 끌어올렸지만, 그 학습 방식은 비공개였다.
+저자들은 reasoning 능력을 RL만으로 끌어낼 수 있음을 검증한 첫 공개 연구라고 자신의 위치를 명시한다.
 
-DeepSeek-R1의 가장 중요한 기여는 인간이 작성한 추론 데이터 없이도 모델이 추론 능력을 개발할 수 있다는 점을 실증적으로 증명한 것입니다.
+기존 reasoning 모델은 모두 인간이 작성한 long-CoT 데이터에 의존한 SFT를 거쳤다.
+이 데이터는 수집 비용이 크고 인간 추론 패턴의 편향을 모델에 전달한다.
+RL로 SFT 단계를 우회할 수 있다면 데이터 비용을 크게 줄이고 모델이 인간 편향에서 자유로운 추론 경로를 탐색하게 된다.
 
-기존 접근 방식의 한계:
-- 인간 전문가가 작성한 Chain-of-Thought(CoT) 데이터에 의존
-- 고품질 추론 데이터 수집에 많은 비용과 시간 소요
-- 인간 추론 패턴의 편향이 모델에 전달될 가능성
+### Related Work 정리
 
-DeepSeek-R1의 접근 방식:
-- 순수 강화학습 환경에서 모델이 자율적으로 추론 전략 개발
-- 검증 가능한 보상 신호만을 사용하여 학습
-- 인간 편향 없이 최적의 추론 경로 탐색
+| 카테고리 | 주요 흐름 | 본 연구와의 차이 |
+|----------|-----------|------------------|
+| Reasoning via SFT | OpenAI o1 (비공개), Qwen-QwQ, DeepSeek-Math | 인간 작성 CoT 의존 — 본 연구는 RL only |
+| Process Reward Models | PRM800K, Math-Shepherd | 단계별 보상 — 본 연구는 결과 기반 rule reward |
+| Self-improvement | Self-Refine, STaR | 단일 모델 반복 — 본 연구는 RL 자기진화 |
+| MCTS reasoning | AlphaZero 계열 시도 | 탐색 트리 폭증 — 본 연구는 single-pass RL |
 
----
+저자들은 PRM과 MCTS를 직접 시도했지만 두 방향 모두 실패로 보고했다(섹션 4.2).
 
-## 자발적으로 나타난 능력
+## 방법론
 
-강화학습 과정에서 DeepSeek-R1은 명시적으로 학습시키지 않았음에도 여러 고급 추론 능력을 자발적으로 개발했습니다.
+### DeepSeek-R1-Zero와 GRPO
 
-### 자기 성찰 (Self-Reflection)
+DeepSeek-R1-Zero는 DeepSeek-V3-Base에 SFT를 거치지 않고 곧장 GRPO(Group Relative Policy Optimization)를 적용한다.
+GRPO는 critic 모델 없이 그룹 내 샘플의 상대 점수로 advantage를 추정해 PPO 대비 메모리 비용을 크게 줄인다.
 
-모델이 자신의 추론 과정을 되돌아보고 오류를 인식하는 능력이 나타났습니다.
-이는 단순히 답을 생성하는 것을 넘어 메타인지적 사고를 수행함을 의미합니다.
+```
+J_GRPO(θ) = E[ 1/G * Σ ( min( π_θ/π_old * A_i,
+              clip(π_θ/π_old, 1-ε, 1+ε) * A_i ) - β * D_KL(π_θ || π_ref) ) ]
+```
 
-### 검증 (Verification)
+advantage는 그룹 내 reward의 z-score로 계산된다.
 
-생성한 답변의 정확성을 스스로 확인하는 능력입니다.
-중간 단계의 계산이나 논리적 추론을 재검토하여 오류를 발견하고 수정합니다.
+```
+A_i = (r_i - mean(rewards)) / std(rewards)
+```
 
-### 동적 전략 적응
+reward는 두 종류다.
+첫째, accuracy reward — 수학 문제는 형식화된 답의 정답성, 코드는 컴파일러 기반 테스트 통과 여부로 룰 기반 검증된다.
+둘째, format reward — 모델 출력이 `<think>` 태그와 `<answer>` 태그를 갖추는지 검사한다.
+저자들은 neural reward model이 reward hacking에 취약함을 명시적으로 언급하며 사용을 배제한다.
 
-문제의 특성에 따라 추론 전략을 유연하게 변경하는 능력입니다.
-쉬운 문제에는 빠른 경로를, 복잡한 문제에는 더 신중한 접근을 선택합니다.
+학습 템플릿은 의도적으로 최소한의 구조만 제약한다.
+`<think>...</think>` 안에 추론 과정을, 그 뒤에 `<answer>` 태그로 답을 출력하라는 지시 외에는 특정 추론 전략을 강요하지 않아 자연스러운 진화를 관찰할 수 있게 한다.
 
----
+### DeepSeek-R1 4단계 파이프라인
 
-## 성능 및 벤치마크
+DeepSeek-R1은 R1-Zero의 가독성과 언어 일관성 문제를 해결하기 위해 4단계 파이프라인을 거친다.
 
-DeepSeek-R1은 검증 가능한 작업 영역에서 기존 지도학습 방식을 능가하는 성능을 달성했습니다.
+| 단계 | 내용 | 데이터 규모 |
+|------|------|--------------|
+| 1. Cold Start | few-shot prompting과 R1-Zero 출력 후처리로 high-quality CoT 수집 | 수천 건 |
+| 2. Reasoning RL | GRPO + language consistency reward 추가 | — |
+| 3. Rejection Sampling + SFT | RL 체크포인트로 reasoning 600k, non-reasoning 200k 샘플 생성 후 2-epoch SFT | 약 800k |
+| 4. General RL | reasoning은 rule reward, 일반 도메인은 학습된 reward로 2차 RL | — |
 
-### 우수한 성능을 보인 영역
+cold start 출력 형식은 `|special_token|<reasoning_process>|special_token|<summary>` 구조로 마크다운 가독성과 언어 일관성을 갖추도록 설계되었다.
+language consistency reward는 CoT에서 목표 언어 단어가 차지하는 비율로 계산되며 accuracy reward와 직접 합산된다.
 
-| 영역 | 특징 |
-|------|------|
-| 수학 | 복잡한 수학 문제 해결 및 증명 |
-| 코딩 경쟁 | 알고리즘 문제 해결 및 최적화 |
-| STEM 분야 | 과학, 기술, 공학 관련 추론 |
+### Distillation
 
-### 검증 가능한 작업의 중요성
+DeepSeek-R1이 만든 800k 샘플로 더 작은 base 모델 6종을 직접 SFT한 distilled 변형이 함께 공개되었다.
+RL 단계는 적용하지 않고 SFT만 수행했다.
 
-강화학습이 효과적으로 작동하려면 명확한 보상 신호가 필요합니다.
-수학 문제의 정답 여부, 코드의 테스트 통과 여부 등 객관적으로 검증할 수 있는 작업에서 이 방식이 특히 강력합니다.
+| Base 모델 | Distilled 변형 |
+|-----------|----------------|
+| Qwen2.5-Math-1.5B | DeepSeek-R1-Distill-Qwen-1.5B |
+| Qwen2.5-Math-7B | DeepSeek-R1-Distill-Qwen-7B |
+| Qwen2.5-14B | DeepSeek-R1-Distill-Qwen-14B |
+| Qwen2.5-32B | DeepSeek-R1-Distill-Qwen-32B |
+| Llama-3.1-8B | DeepSeek-R1-Distill-Llama-8B |
+| Llama-3.3-70B-Instruct | DeepSeek-R1-Distill-Llama-70B |
 
----
+## 실험 셋업
 
-## 소규모 모델로의 지식 전이
+| 항목 | 값 |
+|------|-----|
+| Base 모델 | DeepSeek-V3-Base (671B 총 / 37B activated MoE) |
+| RL 알고리즘 | GRPO |
+| 학습 reward | rule-based (accuracy + format + language consistency) |
+| Reasoning SFT | 600k samples |
+| Non-reasoning SFT | 200k samples |
+| 총 SFT corpus | 약 800k, 2 epochs |
+| Sampling temperature | 0.6 |
+| Top-p | 0.95 |
+| Max generation tokens | 32,768 |
+| AIME 평가 | cons@64 (majority voting) |
+| 평가 judge | GPT-4-Turbo-1106 (open-ended) |
 
-DeepSeek-R1 연구의 또 다른 중요한 발견은 대규모 모델에서 나타난 추론 패턴을 소규모 모델에 전이할 수 있다는 점입니다.
+평가 벤치마크는 수학(AIME 2024, MATH-500, CNMO 2024), 지식(MMLU, MMLU-Redux, MMLU-Pro, GPQA Diamond, C-Eval, CMMLU), 코드(LiveCodeBench, Codeforces, SWE-Bench Verified, HumanEval-Mul), 일반(AlpacaEval 2.0, Arena-Hard, SimpleQA, IFEval, FRAMES)을 포괄한다.
 
-### 지식 증류(Knowledge Distillation)
+## 주요 결과
 
-대규모 모델이 학습한 추론 능력을 소규모 모델로 압축하여 전달합니다.
-이를 통해 제한된 컴퓨팅 자원에서도 고급 추론 능력을 활용할 수 있습니다.
+### DeepSeek-R1-Zero 자기진화와 aha moment
 
-### 실용적 의의
+R1-Zero는 SFT 없이도 AIME 2024 pass@1을 학습 시작 시점 15.6%에서 71.0%까지 끌어올렸다.
+cons@64 majority voting을 적용하면 86.7%로 OpenAI o1-0912와 비슷한 수준이 된다.
 
-- 엣지 디바이스에서의 추론 능력 구현 가능
-- 추론 비용 절감
-- 더 넓은 범위의 응용 프로그램에 적용 가능
+| 벤치마크 | DeepSeek-R1-Zero |
+|----------|-------------------|
+| AIME 2024 pass@1 | 71.0% |
+| AIME 2024 cons@64 | 86.7% |
+| MATH-500 pass@1 | 95.9% |
+| GPQA Diamond pass@1 | 95.9% |
+| LiveCodeBench pass@1 | 73.3% |
+| Codeforces rating | 1444 |
 
----
+학습이 진행되면서 평균 응답 길이가 약 1,000 토큰에서 5,000 토큰 이상으로 증가했고, 자기 점검(reflection)과 대안 탐색(exploration of alternatives) 같은 행동이 명시적 학습 없이 자발적으로 등장했다.
+저자들은 학습 도중 모델이 "Wait, wait. Wait. That's an aha moment I can flag here" 같은 표현으로 스스로 추론 단계를 재고하는 순간을 aha moment로 보고한다.
 
-## 의의 및 영향
+### DeepSeek-R1 본 모델 성능
 
-### AI 연구에 대한 영향
+| 벤치마크 | DeepSeek-R1 | OpenAI o1-1217 | DeepSeek-V3 |
+|----------|-------------|-----------------|-------------|
+| AIME 2024 pass@1 | 79.8% | 79.2% | 39.2% |
+| MATH-500 pass@1 | 97.3% | 96.4% | 90.2% |
+| MMLU pass@1 | 90.8% | 91.8% | 88.5% |
+| MMLU-Pro | 84.0% | — | 75.9% |
+| GPQA Diamond | 71.5% | 75.7% | 59.1% |
+| LiveCodeBench | 65.9% | 63.4% | 36.2% |
+| Codeforces rating | 2029 | 2061 | 1134 |
+| Codeforces percentile | 96.3% | 96.6% | 58.7% |
+| AlpacaEval 2.0 LC-winrate | 87.6% | — | 70.0% |
+| Arena-Hard winrate | 92.3% | — | 85.5% |
 
-DeepSeek-R1은 LLM 추론 연구의 새로운 패러다임을 제시합니다.
-인간 데이터 의존성을 줄이면서도 더 강력한 추론 능력을 개발할 수 있는 가능성을 열었습니다.
+DeepSeek-R1은 AIME, MATH-500, LiveCodeBench, Arena-Hard에서 o1-1217을 상회하고 GPQA Diamond에서만 다소 뒤졌다.
+모델 크기는 671B 전체 / 37B activated MoE 구조다.
 
-### 자발적 능력 출현(Emergence)의 증거
+### Distilled 모델 6종
 
-명시적 학습 없이 복잡한 능력이 출현한다는 것은 대규모 모델의 잠재력에 대한 중요한 통찰을 제공합니다.
-이는 향후 AI 시스템 설계에 큰 영향을 미칠 것입니다.
+| 모델 | AIME 2024 | MATH-500 | GPQA Diamond | LiveCodeBench | Codeforces |
+|------|-----------|----------|---------------|----------------|-------------|
+| R1-Distill-Qwen-1.5B | 28.9% | 83.9% | 33.8% | 16.9% | 954 |
+| R1-Distill-Qwen-7B | 55.5% | 92.8% | 49.1% | 37.6% | 1189 |
+| R1-Distill-Qwen-14B | 69.7% | 93.9% | 59.1% | 53.1% | 1481 |
+| R1-Distill-Qwen-32B | 72.6% | 94.3% | 62.1% | 57.2% | 1691 |
+| R1-Distill-Llama-70B | 70.0% | 94.5% | 65.2% | 57.5% | 1633 |
+| QwQ-32B-Preview | 50.0% | 90.6% | 54.5% | 41.9% | 1316 |
+| OpenAI o1-mini | 63.6% | 90.0% | 60.0% | 53.8% | 1820 |
 
-### 오픈소스 공개
+R1-Distill-Qwen-7B는 32B QwQ-Preview를 상회했고, 14B 변형부터는 모든 지표에서 QwQ-32B-Preview를 능가한다.
+32B와 70B 변형은 OpenAI o1-mini를 추론 벤치마크 전반에서 상회한다.
 
-DeepSeek-AI는 이 연구 결과를 오픈소스로 공개하여 AI 연구 커뮤니티 전체가 이 발전을 활용할 수 있도록 했습니다.
+### Distillation vs RL 비교
 
----
+저자는 distillation의 효율성을 직접 검증하기 위해 같은 Qwen-32B base에 두 가지 처리를 비교했다.
+
+| 모델 | AIME 2024 pass@1 | AIME 2024 cons@64 |
+|------|-------------------|---------------------|
+| R1-Zero-Qwen-32B (RL only) | 47.0% | 60.0% |
+| R1-Distill-Qwen-32B (distill from R1) | 72.6% | 83.3% |
+
+결론은 명확하다.
+큰 모델을 distillation 소스로 사용하는 편이 작은 모델에 직접 RL을 돌리는 것보다 훨씬 우수하며, 작은 모델의 단순 RL로는 distillation 수준에 도달하지 못한다.
+
+## 한계와 디스커션
+
+저자가 명시한 한계는 네 가지다.
+첫째, function calling, multi-turn 대화, 복잡한 role-playing, JSON 출력에서 DeepSeek-R1이 DeepSeek-V3보다 떨어진다.
+둘째, 영어와 중국어 외 언어에서 language mixing이 발생한다.
+셋째, 프롬프트에 매우 민감하며 few-shot prompting이 일관되게 성능을 떨어뜨린다.
+넷째, 코드 평가에 시간이 오래 걸려 SWE 류 소프트웨어 엔지니어링 RL 적용이 제한적이다.
+
+저자가 보고한 unsuccessful attempts도 두 가지다.
+첫째, Process Reward Model(PRM)은 단계 정의의 모호성, 정답 검증 어려움, reward hacking, 추가 학습 자원 부담 등의 이유로 실패했다.
+둘째, MCTS는 token 단위 탐색 공간이 체스 대비 지수적으로 크고, 최대 확장 한계 설정이 local optima를 유발하며, value model 학습이 어려워 자기 탐색 기반 반복 향상에 도달하지 못했다.
+
+future work으로 long-CoT를 활용한 일반 능력 강화, 다국어 mixing 해소, 프롬프트 견고성 개선, 비동기 평가를 통한 SWE RL 확장이 제시된다.
+
+## 결론
+
+DeepSeek-R1-Zero는 SFT 없이 RL만으로 reasoning을 끌어낼 수 있음을 AIME 71.0%(cons@64 86.7%)로 입증했다.
+DeepSeek-R1은 cold start와 4단계 파이프라인을 통해 가독성과 언어 일관성을 확보하면서 o1-1217과 동급의 성능에 도달했다(AIME 79.8%, MATH-500 97.3%, Codeforces 2029).
+800k 샘플 distillation으로 1.5B에서 70B까지 6종 변형을 오픈소스 공개했고, 14B부터 QwQ-32B-Preview를 모든 지표에서 능가하며 32B/70B는 OpenAI o1-mini를 상회한다.
+distillation이 작은 모델에 대한 직접 RL보다 우월함을 정량적으로 보였다는 점이 LLM reasoning 연구 커뮤니티에 큰 시사점을 남긴 연구다.
 
 ## Reference
 
-- [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://arxiv.org/abs/2501.12948)
+- [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning (arXiv:2501.12948)](https://arxiv.org/abs/2501.12948/)
+- [DeepSeek-R1 GitHub](https://github.com/deepseek-ai/DeepSeek-R1/)
