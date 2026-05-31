@@ -432,5 +432,3 @@ KV 캐시 양자화 자체는 LLM 인프라의 핵심 축으로 자리 잡았고
 - [KIVI 논문 (비교 baseline, arXiv:2402.02750)](https://arxiv.org/pdf/2402.02750){:target="_blank"}
 - [Hacker News - TurboQuant Google 발표 토론](https://news.ycombinator.com/item?id=47513475){:target="_blank"}
 - [Hacker News - TurboQuant is a restricted version of EDEN](https://news.ycombinator.com/item?id=47917577){:target="_blank"}
-</content>
-</invoke>
