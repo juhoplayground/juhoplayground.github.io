@@ -28,7 +28,6 @@ toc: True
 5. [04 Corrective RAG (CRAG)](#04-corrective-rag-crag)
 6. [05 Multimodal RAG](#05-multimodal-rag)
 7. [결론](#결론)
-8. [Reference](#reference)
 
 ## 개요
 
@@ -67,4 +66,11 @@ CRAG는 검색 결과가 부정확하거나 부적합할 때를 가정하고 보
 Multimodal RAG는 텍스트뿐 아니라 이미지, 표, 차트, 음성 같은 다양한 모달리티를 인덱스에 함께 담는다.
 그래픽은 Text Chunk와 Visual/Multimedia를 별도로 임베딩한 뒤 통합 Multimodal Vector DB에 저장하고, Query 시점에 Multimodal LLM이 양쪽을 함께 보는 흐름으로 묘사된다.
 PDF에 포함된 그림과 표, 제품 카탈로그의 이미지, 회의 녹취 같은 자료를 통합해야 하는 환경에서 자연스러운 선택지가 된다.
+
+## 결론
+
+인포그래픽이 정리한 다섯 가지 RAG 아키텍처는 서로 대체재가 아니라 서로 다른 문제를 겨냥한 보완재다.
+Hybrid RAG는 키워드와 의미 검색을 결합해 검색 정확도를 높이고, GraphRAG는 엔티티 관계 추론에, Agentic RAG는 자율적 도구 사용에 강점이 있다.
+Corrective RAG는 잘못된 검색을 보정해 환각을 줄이고, Multimodal RAG는 텍스트를 넘어선 모달리티 통합을 다룬다.
+실무에서는 도메인 특성(키워드 정밀도, 관계 추론, 워크플로 복잡도, 검색 신뢰도, 모달리티)에 따라 이들을 단독 또는 조합으로 선택하는 것이 핵심이다.
 
