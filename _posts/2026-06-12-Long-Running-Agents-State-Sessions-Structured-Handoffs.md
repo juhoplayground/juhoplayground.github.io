@@ -27,7 +27,7 @@ toc: True
 4. [주요 아키텍처 접근법](#주요-아키텍처-접근법)
    - [The Ralph Loop: 가장 단순한 실용적 접근](#the-ralph-loop-가장-단순한-실용적-접근)
    - [Anthropic: Brain/Hands/Session 분리](#anthropic-brainhandssession-분리)
-   - [Cursor: Planners/Workers/Judges 구조](#cursor-plannerworkersjudges-구조)
+   - [Cursor: Planners/Workers/Judges 구조](#cursor-plannersworkersjudges-구조)
    - [Google: Gemini Enterprise Agent Platform](#google-gemini-enterprise-agent-platform)
 5. [5가지 프로덕션 설계 패턴](#5가지-프로덕션-설계-패턴)
 6. [실전 구현 경로](#실전-구현-경로)
